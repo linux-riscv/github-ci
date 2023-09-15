@@ -2,9 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-name: linux-riscv-ci
+name: linux-riscv-ci-patches
 
-on: [pull_request, push]
+on: pull_request
 
 jobs:
   build-patches:
