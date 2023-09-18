@@ -34,7 +34,6 @@ tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
 
 if [ $rc -eq 1 ]
 then
-	echo "::error::FAIL PATCH: $1"
 	grep "\(error\):" $tmpfile_e >&2
 	rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b $tmpfile_e
 	exit $rc
@@ -70,7 +69,6 @@ tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
 
 if [ $rc -eq 1 ]
 then
-	echo "::error::FAIL PATCH: $1"
 	grep "\(warning\|error\):" $tmpfile_n >&2
 	rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b
 	exit $rc
@@ -101,15 +99,11 @@ if [ $current -gt $incumbent ]; then
 
   diff -U 0 $tmpfile_fo $tmpfile_fn 1>&2
   rm $tmpfile_fo $tmpfile_fn
-  echo "::error::FAIL pre: $incumbent post: $current PATCH: $1"
+  echo "pre: $incumbent post: $current"
 
   rc=1
 fi
 
 rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b $tmpfile_e
-
-if [ $rc -eq 0 ]; then
-	echo "::notice::OK PATCH: $1"
-fi
 
 exit $rc

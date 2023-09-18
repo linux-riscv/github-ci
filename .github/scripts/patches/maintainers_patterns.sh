@@ -25,9 +25,7 @@ now=$(cat $tmpfile_n | wc -l)
 if [ $now -gt $before ]; then
   echo "MAINTAINERS pattern errors before the patch: $before and now $now"
   echo "New pattern errors added, run ./scripts/get_maintainer.pl --self-test=patterns for more info" 1>&2
-  echo "::error::FAIL PATCH: $1"
 else
-  echo "::notice::OK PATCH: $1"
   rc=0
 fi
 

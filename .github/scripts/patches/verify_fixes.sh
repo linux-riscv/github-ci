@@ -27,8 +27,6 @@ split_re='^([Cc][Oo][Mm][Mm][Ii][Tt])?[[:space:]]*([[:xdigit:]]{5,})([[:space:]]
 nl=$'\n'
 tab=$'\t'
 
-msg="$1"
-
 help()
 {
 	echo "error, git range not found"
@@ -51,7 +49,6 @@ verify_fixes()
 	commits=$(git rev-list --no-merges -i --grep='^[[:space:]]*Fixes:' "${git_range}")
 	if [ -z "$commits" ]; then
                 echo "No Fixes tag"
-		echo "::notice::OK PATCH: ${msg}"
 	        return 0
 	fi
 
@@ -199,11 +196,9 @@ verify_fixes()
 
 if [ ${error} -ne 0 ] ; then
 		echo "Problems with Fixes tag: $error"
-    		echo "::error::FAIL PATCH: ${msg}"
 		exit 1
 	fi
 	echo "Fixes tag looks correct"
-        echo "::notice::OK PATCH: ${msg}"
 	return 0
 }
 

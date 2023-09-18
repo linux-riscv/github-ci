@@ -22,8 +22,15 @@ for i in "${patches[@]}"; do
         git reset --hard $i >/dev/null
         msg="Patch ${cnt}/${#patches[@]}: Test ${tcnt}/${#tests[@]}: ${j}"
         echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
-        bash ${j} "${msg}" || rc=1
+        testrc=0
+        bash ${j} || testrc=1
         echo "::endgroup::"
+        if (( $testrc )); then
+            rc=1
+            echo "::error::FAIL ${msg}"
+        else
+            echo "::notice::OK ${msg}"
+        fi
         echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
         tcnt=$(( tcnt + 1 ))
     done

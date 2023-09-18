@@ -22,10 +22,8 @@ ret=$?
 [ $ret -ne 0 ] && grep -P 'total: 0 errors, \d+ warnings, \d+ checks' $tmpfile && ret=250
 
 if [ $ret -ne 0 ]; then
-  echo "::error::FAIL PATCH: $1"
   grep '\(WARNING\|ERROR\|CHECK\): ' $tmpfile | LC_COLLATE=C sort -u
 else
-  echo "::notice::OK PATCH: $1"
   grep 'total: ' $tmpfile | LC_COLLATE=C sort -u
 fi
 

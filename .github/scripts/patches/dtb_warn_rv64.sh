@@ -53,10 +53,7 @@ if [ $current -gt $incumbent ]; then
   sed -i 's|^.*arch|arch|g' $tmpfile_n
   diff -U 0 $tmpfile_o $tmpfile_n 1>&2
 
-  echo "::error::FAIL PATCH: $1"
   rc=1
-else
-  echo "::notice::OK PATCH: $1"
 fi
 
 rm -rf $tmpdir_o $tmpdir_n $tmpfile_o $tmpfile_n

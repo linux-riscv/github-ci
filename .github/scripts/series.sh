@@ -17,8 +17,15 @@ for i in "${tests[@]}"; do
     git reset --hard HEAD >/dev/null
     msg="Test ${tcnt}/${#tests[@]}: ${i}"
     echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
-    bash ${i} "${msg}" || rc=1
+    testrc=0
+    bash ${i} || testrc=1
     echo "::endgroup::"
+    if (( $testrc )); then
+        rc=1
+        echo "::error::FAIL ${msg}"
+    else
+        echo "::notice::OK ${msg}"
+    fi
     echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
     tcnt=$(( tcnt + 1 ))
 done

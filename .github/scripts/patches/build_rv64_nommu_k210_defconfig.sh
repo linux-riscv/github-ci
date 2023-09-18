@@ -15,10 +15,7 @@ tuxmake --wrapper ccache --target-arch riscv --directory . \
         > $tmpfile || rc=1
 
 if [ $rc -ne 0 ]; then
-  echo "::error::FAIL PATCH: $1"
   grep "\(warning\|error\):" $tmpfile >&2
-else
-  echo "::notice::OK PATCH: $1"
 fi
 
 rm -rf $tmpdir $tmpfile

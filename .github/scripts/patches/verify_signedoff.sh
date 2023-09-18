@@ -16,8 +16,6 @@
 # Thanks to Stephen Rothwell <sfr@canb.auug.org.au> for the majority of this code
 #
 
-msg="$1"
-
 help()
 {
 	echo "error, git range not found"
@@ -68,11 +66,9 @@ verify_signedoff()
 	done
 	if "$error"; then
 		echo "Errors in tree with Signed-off-by, please fix!"
-    		echo "::error::FAIL PATCH: ${msg}"
 		exit 1
 	fi
         echo "Signed-off-by tag matches author and committer"
-        echo "::notice::OK PATCH: ${msg}"
 }
 
 git_range="HEAD~..HEAD"

@@ -9,10 +9,8 @@ inlines=$(
        )
 
 if [ -z "$inlines" ]; then
-  echo "::notice::OK PATCH: $1"
   exit 0
 else
-  echo "::error::FAIL PATCH: $1"
   msg="Detected static functions without inline keyword in header files:"
   echo -e "$msg\n$inlines" 1>&2
   count=$( (echo "---"; echo "$inlines") | grep '^---$' | wc -l)

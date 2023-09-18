@@ -42,10 +42,7 @@ if [ $current -gt $incumbent ]; then
 
   diff $tmpfile_fo $tmpfile_fn 1>&2
   rm $tmpfile_fo $tmpfile_fn
-  echo "::error::FAIL PATCH: $1"
   rc=1
-else
-  echo "::notice::OK PATCH: $1"
 fi
 
 rm $tmpfile_o $tmpfile_n
