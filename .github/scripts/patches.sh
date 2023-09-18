@@ -12,7 +12,6 @@ d=$(dirname "${BASH_SOURCE[0]}")
 basesha=$(git log -1 --pretty=%H .github/scripts/helpers.sh)
 patches=( $(git rev-list --reverse ${basesha}..HEAD) )
 
-group_start "Per-patch"
 rc=0
 cnt=1
 for i in "${patches[@]}"; do
@@ -35,6 +34,5 @@ for i in "${patches[@]}"; do
     done
     cnt=$(( cnt + 1 ))
 done
-group_end
 
 exit $rc

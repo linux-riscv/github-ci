@@ -9,7 +9,6 @@ d=$(dirname "${BASH_SOURCE[0]}")
 
 . ${d}/helpers.sh
 
-group_start "Series"
 rc=0
 tcnt=1
 tests=( $(ls ${d}/series/*.sh) )
@@ -28,6 +27,5 @@ for i in "${tests[@]}"; do
     fi
     tcnt=$(( tcnt + 1 ))
 done
-group_end
 
 exit $rc
