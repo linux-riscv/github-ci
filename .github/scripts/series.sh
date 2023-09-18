@@ -14,7 +14,7 @@ rc=0
 tcnt=1
 tests=( $(ls ${d}/series/*.sh) )
 for i in "${tests[@]}"; do
-    git reset --hard HEAD
+    git reset --hard HEAD >/dev/null
     msg="Test ${tcnt}/${#tests[@]}: ${i}"
     echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
     bash ${i} "${msg}" || rc=1

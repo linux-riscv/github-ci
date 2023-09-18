@@ -19,7 +19,7 @@ for i in "${patches[@]}"; do
     tests=( $(ls ${d}/patches/*.sh) )
     tcnt=1
     for j in "${tests[@]}"; do
-        git reset --hard $i
+        git reset --hard $i >/dev/null
         msg="Patch ${cnt}/${#patches[@]}: Test ${tcnt}/${#tests[@]}: ${j}"
         echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
         bash ${j} "${msg}" || rc=1
