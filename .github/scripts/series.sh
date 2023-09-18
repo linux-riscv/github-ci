@@ -18,8 +18,8 @@ for i in "${tests[@]}"; do
     msg="Test ${tcnt}/${#tests[@]}: ${i}"
     echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
     bash ${i} "${msg}" || rc=1
-    echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
     echo "::endgroup::"
+    echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
     tcnt=$(( tcnt + 1 ))
 done
 group_end

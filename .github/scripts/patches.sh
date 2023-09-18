@@ -23,8 +23,8 @@ for i in "${patches[@]}"; do
         msg="Patch ${cnt}/${#patches[@]}: Test ${tcnt}/${#tests[@]}: ${j}"
         echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
         bash ${j} "${msg}" || rc=1
-        echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
         echo "::endgroup::"
+        echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
         tcnt=$(( tcnt + 1 ))
     done
     cnt=$(( cnt + 1 ))
