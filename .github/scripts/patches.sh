@@ -13,6 +13,7 @@ basesha=$(git log -1 --pretty=%H .github/scripts/helpers.sh)
 patches=( $(git rev-list --reverse ${basesha}..HEAD) )
 
 group_start "Per-patch"
+rc=0
 cnt=1
 for i in "${patches[@]}"; do
     tests=( $(ls ${d}/patches/*.sh) )
@@ -21,7 +22,7 @@ for i in "${patches[@]}"; do
         git reset --hard $i
         msg="Patch ${cnt}/${#patches[@]}: Test ${tcnt}/${#tests[@]}: ${j}"
         echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
-        bash ${j} "${msg}" || true
+        bash ${j} "${msg}" || rc=1
         echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
         echo "::endgroup::"
         tcnt=$(( tcnt + 1 ))
@@ -29,3 +30,5 @@ for i in "${patches[@]}"; do
     cnt=$(( cnt + 1 ))
 done
 group_end
+
+exit $rc
