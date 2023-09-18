@@ -16,7 +16,7 @@ tests=( $(ls ${d}/series/*.sh) )
 for i in "${tests[@]}"; do
     git reset --hard HEAD >/dev/null
     msg="Test ${tcnt}/${#tests[@]}: ${i}"
-    echo "::group::${msg} @ $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
+    echo "::group::${msg}"
     testrc=0
     bash ${i} || testrc=1
     echo "::endgroup::"
@@ -26,7 +26,6 @@ for i in "${tests[@]}"; do
     else
         echo "::notice::OK ${msg}"
     fi
-    echo "Completed $(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)"
     tcnt=$(( tcnt + 1 ))
 done
 group_end
