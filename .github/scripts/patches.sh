@@ -22,9 +22,12 @@ for i in "${patches[@]}"; do
         msg="Patch ${cnt}/${#patches[@]}: Test ${tcnt}/${#tests[@]}: ${j}"
         echo "::group::${msg}"
         testrc=0
-        bash ${j} || testrc=1
+        bash ${j} || testrc=$?
         echo "::endgroup::"
-        if (( $testrc )); then
+        if (( $testrc == 250 )); then
+            rc=1
+            echo "::warning::WARN ${msg}"
+        elif (( $testrc )); then
             rc=1
             echo "::error::FAIL ${msg}"
         else
