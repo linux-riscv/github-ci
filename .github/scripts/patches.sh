@@ -11,31 +11,13 @@ d=$(dirname "${BASH_SOURCE[0]}")
 
 basesha=$(git log -1 --pretty=%H .github/scripts/helpers.sh)
 patches=( $(git rev-list --reverse ${basesha}..HEAD) )
-
+patch_tot=${#patches[@]}
 rc=0
 cnt=1
-for i in "${patches[@]}"; do
-    tests=( $(ls ${d}/patches/*.sh) )
-    tcnt=1
-    for j in "${tests[@]}"; do
-        git reset --hard $i >/dev/null
-        msg="Patch ${cnt}/${#patches[@]}: Test ${tcnt}/${#tests[@]}: ${j}"
-        echo "::group::${msg}"
-        testrc=0
-        bash ${j} || testrc=$?
-        echo "::endgroup::"
-        if (( $testrc == 250 )); then
-            rc=1
-            echo "::warning::WARN ${msg}"
-        elif (( $testrc )); then
-            rc=1
-            echo "::error::FAIL ${msg}"
-        else
-            echo "::notice::OK ${msg}"
-        fi
-        tcnt=$(( tcnt + 1 ))
-    done
-    cnt=$(( cnt + 1 ))
-done
+parallel -j 3 --colsep=, bash ${d}/patch_tester.sh {1} {2} {3} :::: <(
+    for i in "${patches[@]}"; do
+	echo ${i},${cnt},${patch_tot}
+	cnt=$(( cnt + 1 ))
+    done) || rc=1
 
 exit $rc
