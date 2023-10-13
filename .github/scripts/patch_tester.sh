@@ -12,14 +12,14 @@ patch_num=$2
 patch_tot=$3
 
 worktree=$(mktemp -d)
-git worktree add $worktree ${sha1}
+git worktree add $worktree ${sha1} &>/dev/null
 cd $worktree
 
 rc=0
 tests=( $(ls ${d}/patches/*.sh) )
 tcnt=1
 for j in "${tests[@]}"; do
-    git reset --hard ${sha1} >/dev/null
+    git reset --hard ${sha1} &>/dev/null
     msg="Patch ${patch_num}/${patch_tot}: Test ${tcnt}/${#tests[@]}: ${j}"
     echo "::group::${msg}"
     testrc=0
@@ -37,6 +37,6 @@ for j in "${tests[@]}"; do
     tcnt=$(( tcnt + 1 ))
 done
 
-git worktree remove $worktree || true
+git worktree remove $worktree &>/dev/null || true
 
 exit $rc
