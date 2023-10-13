@@ -22,9 +22,9 @@ ret=$?
 [ $ret -ne 0 ] && grep -P 'total: 0 errors, \d+ warnings, \d+ checks' $tmpfile && ret=250
 
 if [ $ret -ne 0 ]; then
-  grep '\(WARNING\|ERROR\|CHECK\): ' $tmpfile | LC_COLLATE=C sort -u
+        grep '\(WARNING\|ERROR\|CHECK\): ' $tmpfile | LC_COLLATE=C sort -u
 else
-  grep 'total: ' $tmpfile | LC_COLLATE=C sort -u
+        grep 'total: ' $tmpfile | LC_COLLATE=C sort -u
 fi
 
 rm $tmpfile

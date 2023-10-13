@@ -10,12 +10,12 @@ old_params=$(git show | grep -ic '^\-.*module_param')
 echo "Was $old_params now: $new_params"
 
 if [ -z "$params" ]; then
-  exit 0
-else
-  echo -e "Detected module_param\n$params" 1>&2
-  if [ $new_params -eq $old_params ]; then
-    exit 250
-  else
-    exit 1
-  fi
+        exit 0
 fi
+
+echo -e "Detected module_param\n$params"
+if [ $new_params -eq $old_params ]; then
+        exit 250
+fi
+
+exit 1
