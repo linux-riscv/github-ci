@@ -12,10 +12,10 @@ tuxmake --wrapper ccache --target-arch riscv --directory . \
         --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
         -o $tmpdir --toolchain gcc -z none -k nommu_k210_defconfig \
         CROSS_COMPILE=riscv64-linux- \
-        > $tmpfile || rc=1
+        >$tmpfile 2>/dev/null || rc=1
 
 if [ $rc -ne 0 ]; then
-  grep "\(warning\|error\):" $tmpfile >&2
+        grep "\(warning\|error\):" $tmpfile
 fi
 
 rm -rf $tmpdir $tmpfile

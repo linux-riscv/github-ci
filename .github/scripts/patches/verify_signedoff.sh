@@ -54,8 +54,8 @@ verify_signedoff()
 
 		if "$am" || "$cm"; then
 			printf "Commit %s\n" "$(git show -s --abbrev-commit --abbrev=12 --pretty=format:"%h (\"%s\")%n" "${c}")"
-			"$am" && printf "\tauthor Signed-off-by missing\n" # ::error::
-			"$cm" && printf "\tcommitter Signed-off-by missing\n" # ::error::
+			"$am" && printf "\tauthor Signed-off-by missing\n"
+			"$cm" && printf "\tcommitter Signed-off-by missing\n"
 			printf "\tauthor email:    %s\n" "$ae"
 			printf "\tcommitter email: %s\n"  "$ce"
 			readarray -t s <<< "${sob}"

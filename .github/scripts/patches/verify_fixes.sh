@@ -187,7 +187,7 @@ verify_fixes()
 				commit_msg=''
 				# Make sure we don't accidentally miss anything.
 				if [ $error -eq 0 ]; then
-					echo 'Whoops! $error out of sync with $msg' >&2
+					echo 'Whoops! $error out of sync with $msg'
 					error=1
 				fi
 			fi

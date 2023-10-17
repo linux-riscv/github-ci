@@ -9,11 +9,11 @@ inlines=$(
        )
 
 if [ -z "$inlines" ]; then
-  exit 0
-else
-  msg="Detected static functions without inline keyword in header files:"
-  echo -e "$msg\n$inlines" 1>&2
-  count=$( (echo "---"; echo "$inlines") | grep '^---$' | wc -l)
-  echo "$msg $count"
-  exit 1
+        exit 0
 fi
+
+msg="Detected static functions without inline keyword in header files:"
+echo -e "$msg\n$inlines"
+count=$( (echo "---"; echo "$inlines") | grep '^---$' | wc -l)
+echo "$msg $count"
+exit 1
