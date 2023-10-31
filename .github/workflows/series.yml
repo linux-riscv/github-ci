@@ -2,17 +2,18 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-name: linux-riscv-ci
+name: linux-riscv-ci-series
 
 defaults:
   run:
     shell: bash -leo pipefail {0}
 
-on: workflow_dispatch
+on: pull_request
 
 jobs:
   build-series:
     runs-on: 'self-hosted'
+    timeout-minutes: 50400 # 35 days
     container:
       image: ghcr.io/linux-riscv/pw-builder:latest
       volumes:
