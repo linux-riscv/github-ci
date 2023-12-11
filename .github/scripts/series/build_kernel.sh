@@ -76,6 +76,6 @@ make_wrap INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH="${install}/${name}" modules_inst
 
 cp $output/vmlinux ${install}/${name}
 
-pushd ${install}
-tar -c -I 'xz -9 -T0' -f linux_${name}.tar.xz \
-    "${name}"
+# pushd ${install}
+# tar -c -I 'xz -9 -T0' -f linux_${name}.tar.xz \
+#    "${name}"

@@ -10,7 +10,7 @@ set -euo pipefail
 
 d=$(dirname "${BASH_SOURCE[0]}")
 
-kernel=$1          # e.g. linux_ubuntu_rv64_gcc_defconfig_plain.tar.xz
+kernel=$1          # e.g. rv64_gcc_defconfig_plain
 rootfs=$2          #      rootfs_rv64_alpine_2023.03.13.tar.xz
 fw_rv32_opensbi=$3 #      firmware_rv32_opensbi.tar.xz
 fw_rv64_opensbi=$4 #      firmware_rv64_opensbi.tar.xz
@@ -74,13 +74,13 @@ tar -C $tmp/fw/rv64 -xf $fw_rv64_opensbi
 tar -C $tmp/fw/rv64 -xf $fw_rv64_uboot
 tar -C $tmp/fw/rv64 -xf $fw_rv64_edk2
 
-tar -C $tmp -xf $kernel
+# tar -C $tmp -xf $kernel
 
-vmlinuz=$(find $tmp -name '*vmlinuz*')
-config=$(find $tmp -name 'config-*')
+vmlinuz=$(find $kernel -name '*vmlinuz*')
+config=$(find $kernel -name 'config-*')
 
 image=$tmp/rootfs.img
-$d/prepare_rootfs.sh $image $tmp $rootfs
+$d/prepare_rootfs.sh $image $kernel $rootfs
 
 if [[ $kernel =~ "rv64" ]]; then
     list_cpus=( "rv64" "rv64,v=true,vlen=256,elen=64,h=true,zbkb=on,zbkc=on,zbkx=on,zkr=on,zkt=on,svinval=on,svnapot=on,svpbmt=on" )

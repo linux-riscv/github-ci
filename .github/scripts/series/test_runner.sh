@@ -17,7 +17,7 @@ fragment=$3
 toolchain=$4
 rootfs=$5
 
-lnx="${kernels_dir}/linux_${xlen}_${toolchain}_${config//_/-}_$(basename $fragment).tar.xz"
+lnx="${kernels_dir}/${xlen}_${toolchain}_${config//_/-}_$(basename $fragment)"
 rootfs=$(echo ${rootfs_dir}/rootfs_${xlen}_${rootfs}_*.tar.xz)
 fw_rv32_opensbi=$(echo ${firmware_dir}/firmware_rv32_opensbi_*.tar.xz)
 fw_rv64_opensbi=$(echo ${firmware_dir}/firmware_rv64_opensbi_*.tar.xz)
