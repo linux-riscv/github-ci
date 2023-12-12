@@ -67,15 +67,15 @@ trap 'rm -rf "$tmp"' EXIT
 
 mkdir -p ${log_dir}
 
-mkdir -p $tmp/fw/rv32
-mkdir -p $tmp/fw/rv64
-
-tar -C $tmp/fw/rv32 -xf $fw_rv32_opensbi
-
-tar -C $tmp/fw/rv64 -xf $fw_rv64_opensbi
-tar -C $tmp/fw/rv64 -xf $fw_rv64_uboot
-tar -C $tmp/fw/rv64 -xf $fw_rv64_edk2
-
+# mkdir -p $tmp/fw/rv32
+# mkdir -p $tmp/fw/rv64
+# 
+# tar -C $tmp/fw/rv32 -xf $fw_rv32_opensbi
+# 
+# tar -C $tmp/fw/rv64 -xf $fw_rv64_opensbi
+# tar -C $tmp/fw/rv64 -xf $fw_rv64_uboot
+# tar -C $tmp/fw/rv64 -xf $fw_rv64_edk2
+# 
 # tar -C $tmp -xf $kernel
 
 vmlinuz=$(find $kernel -name '*vmlinuz*')
@@ -93,7 +93,7 @@ if [[ $kernel =~ "rv64" ]]; then
     for cpu in "${list_cpus[@]}"; do
         # Non-UEFI boot
         n=$(basename $kernel .tar.xz)-$(basename $rootfs .tar.xz)-${cpu//,/-}
-        qemu_rv64 "$tmp/fw/rv64/fw_dynamic.bin" "$cpu" "$vmlinuz" "" \
+        qemu_rv64 "/fw/rv64/fw_dynamic.bin" "$cpu" "$vmlinuz" "" \
                   "${log_dir}/${n}.log"
 
         check_boot "$n"
@@ -101,15 +101,15 @@ if [[ $kernel =~ "rv64" ]]; then
         if [[ -n $config ]] && grep -q 'CONFIG_EFI=y' $config; then
             # UEFI boot with uboot
             n=${n}-uboot-uefi
-            qemu_rv64 "$tmp/fw/rv64/fw_dynamic.bin" "$cpu" "$tmp/fw/rv64/rv64-u-boot.bin" "" \
+            qemu_rv64 "/fw/rv64/fw_dynamic.bin" "$cpu" "/fw/rv64/rv64-u-boot.bin" "" \
                       "${log_dir}/${n}.log"
 
             check_boot "$n"
 
             # UEFI boot with edk2
             # n=${n}-uboot-edk2
-            # qemu_rv64 "$tmp/fw/rv64/fw_dynamic.bin" "$cpu" "$vmlinuz" \
-            #         "-drive file=$tmp/fw/rv64/RISCV_VIRT.fd,if=pflash,format=raw,unit=1"
+            # qemu_rv64 "/fw/rv64/fw_dynamic.bin" "$cpu" "$vmlinuz" \
+            #         "-drive file=/fw/rv64/RISCV_VIRT.fd,if=pflash,format=raw,unit=1"
             # check_boot "$n"
         else
             echo "$n UEFI SKIPPED"
@@ -126,7 +126,7 @@ elif [[ $kernel =~ "rv32" ]]; then
         -smp 4 \
         -object rng-random,filename=/dev/urandom,id=rng0 \
         -device virtio-rng-device,rng=rng0 \
-        -bios $tmp/fw/rv32/fw_dynamic.bin \
+        -bios /fw/rv32/fw_dynamic.bin \
         -kernel $vmlinuz \
         -append "root=/dev/vda2 rw earlycon console=tty0 console=ttyS0 panic=-1 oops=panic sysctl.vm.panic_on_oom=1" \
         -m 1G \
