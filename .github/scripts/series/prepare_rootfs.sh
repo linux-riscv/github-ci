@@ -42,6 +42,8 @@ fi
 
 imsz=$(( ${imsz} + 1 ))
 
+# Soft fallback to TCG is broken on aarch64, but forcing TCG works.
+export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
 eval "$(guestfish --listen)"
 
 guestfish --remote -- \

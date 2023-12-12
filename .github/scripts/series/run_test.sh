@@ -48,6 +48,8 @@ qemu_rv64 () {
 check_boot () {
     local n=$1
 
+    # Soft fallback to TCG is broken on aarch64, but forcing TCG works.
+    export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
     shutdown="$(guestfish --ro -a "$image" -i cat /shutdown-status 2>/dev/null)"
     if [[ $shutdown == "clean" ]]; then
         echo "$n OK"
