@@ -11,7 +11,7 @@ NO_AUTHOR_SIGN_OFF,\
 GIT_COMMIT_ID,\
 CAMELCASE
 
-tmpfile=$(mktemp)
+tmpfile=$(mktemp -p /build)
 
 ./scripts/checkpatch.pl --strict --ignore=$IGNORED -g HEAD | tee $tmpfile
 

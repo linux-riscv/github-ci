@@ -7,17 +7,21 @@ set -euo pipefail
 
 d=$(dirname "${BASH_SOURCE[0]}")
 
-. ${d}/helpers.sh
+(while true ; do sleep 30; echo .; done) &
+progress=$!
 
-basesha=$(git log -1 --pretty=%H .github/scripts/helpers.sh)
+parallel_log=$(mktemp -p /build)
+basesha=$(git log -1 --pretty=%H .github/scripts/patches.sh)
 patches=( $(git rev-list --reverse ${basesha}..HEAD) )
 patch_tot=${#patches[@]}
 rc=0
 cnt=1
-parallel -j 3 --colsep=, bash ${d}/patch_tester.sh {1} {2} {3} :::: <(
+parallel -j 4 --joblog ${parallel_log} --colsep=, bash ${d}/patches/patch_tester.sh \
+	 {1} {2} {3} :::: <(
     for i in "${patches[@]}"; do
-	echo ${i},${cnt},${patch_tot}
-	cnt=$(( cnt + 1 ))
+        echo ${i},${cnt},${patch_tot}
+        cnt=$(( cnt + 1 ))
     done) || rc=1
+kill $progress
+cat ${parallel_log}
 
-exit $rc

@@ -4,8 +4,8 @@
 # Copyright (C) 2019 Netronome Systems, Inc.
 # Copyright (c) 2020 Facebook
 
-tmpfile_o=$(mktemp)
-tmpfile_n=$(mktemp)
+tmpfile_o=$(mktemp -p /build)
+tmpfile_n=$(mktemp -p /build)
 rc=0
 
 files=$(git show --pretty="" --name-only HEAD)
@@ -32,8 +32,8 @@ if [ $current -gt $incumbent ]; then
         diff $tmpfile_o $tmpfile_n
 
         echo "Per-file breakdown"
-        tmpfile_fo=$(mktemp)
-        tmpfile_fn=$(mktemp)
+        tmpfile_fo=$(mktemp -p /build)
+        tmpfile_fn=$(mktemp -p /build)
 
         grep -i "\(warn\|error\)" $tmpfile_o | sed -n 's@\(^\.\./[/a-zA-Z0-9_.-]*.[ch]\):.*@\1@p' | sort | uniq -c \
           >$tmpfile_fo

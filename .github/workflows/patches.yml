@@ -12,21 +12,23 @@ on: pull_request
 
 jobs:
   build-patches:
-    runs-on: 'self-hosted'
+    runs-on: rise-arc-runner-set-kernel
     timeout-minutes: 50400 # 35 days
     container:
-      image: ghcr.io/linux-riscv/pw-builder:latest
-      volumes:
-        - /disk-1/var/lib/ghrunner:/ccache
+      image: ghcr.io/linux-riscv/pw-builder-multi:latest
     steps:
       - name: Configure git
         run: |
           git config --global --add safe.directory '*'
       - name: Checkout git
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
+        run: |
+          mkdir -p /build/my-linux
+          cd /build/my-linux
+          git init
+          git remote add origin https://github.com/${{ github.repository }}
+          git fetch origin ${{ github.event.pull_request.head.sha }}
+          git reset --hard ${{ github.event.pull_request.head.sha }}
+          git log -1
       - name: Run checks
         run: |
-          bash .github/scripts/patches.sh
+          cd /build/my-linux && bash .github/scripts/patches.sh
