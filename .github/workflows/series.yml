@@ -2,30 +2,44 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-name: linux-riscv-ci
+name: linux-riscv-ci-series
 
 defaults:
   run:
     shell: bash -leo pipefail {0}
 
-on: workflow_dispatch
+on: pull_request
 
 jobs:
   build-series:
-    runs-on: 'self-hosted'
+    runs-on: rise-arc-runner-set-kernel
+    timeout-minutes: 50400 # 35 days
     container:
-      image: ghcr.io/linux-riscv/pw-builder:latest
-      volumes:
-        - /disk-1/var/lib/ghrunner:/ccache
+      image: ghcr.io/linux-riscv/pw-builder-multi:latest
     steps:
       - name: Configure git
         run: |
           git config --global --add safe.directory '*'
       - name: Checkout git
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+        run: |
+          mkdir -p /build/my-linux
+          cd /build/my-linux
+          git init
+          git remote add origin https://github.com/${{ github.repository }}
+          git fetch origin --depth=1 ${{ github.event.pull_request.head.sha }}
+          git reset --hard ${{ github.event.pull_request.head.sha }}
+          git log -1
       - name: Run checks
         run: |
-          bash .github/scripts/series.sh
-          
+          cd /build/my-linux && bash .github/scripts/series.sh
+      - name: Collect build logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-build-logs
+          path: /build/kernels/logs/*
+      - name: Collect run logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-logs
+          path: /build/tests/*
+
