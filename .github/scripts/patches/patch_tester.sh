@@ -11,12 +11,12 @@ sha1=$1
 patch_num=$2
 patch_tot=$3
 
-worktree=$(mktemp -d)
+worktree=$(mktemp -d -p /build)
 git worktree add $worktree ${sha1} &>/dev/null
 cd $worktree
 
 rc=0
-tests=( $(ls ${d}/patches/*.sh) )
+tests=( $(ls ${d}/tests/*.sh) )
 tcnt=1
 for j in "${tests[@]}"; do
     git reset --hard ${sha1} &>/dev/null

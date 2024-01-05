@@ -3,14 +3,14 @@
 #
 # Copyright (c) 2022 by Rivos Inc.
 
-tmpdir=build
-tmpfile=$(mktemp)
+tmpdir=$(mktemp -d -p /build)
+tmpfile=$(mktemp -p /build)
 rc=0
 
 tuxmake --wrapper ccache --target-arch riscv --directory . \
         --environment=KBUILD_BUILD_TIMESTAMP=@1621270510 \
         --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
-        -o $tmpdir --toolchain llvm -z none -k rv32_defconfig \
+        -o $tmpdir --toolchain gcc -z none -k nommu_k210_defconfig \
         CROSS_COMPILE=riscv64-linux- \
         >$tmpfile 2>/dev/null || rc=1
 

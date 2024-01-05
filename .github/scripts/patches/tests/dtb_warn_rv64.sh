@@ -5,11 +5,11 @@
 
 # Modified tests/patch/build_defconfig_warn.sh for RISC-V builds
 
-tmpfile_o=$(mktemp)
-tmpfile_n=$(mktemp)
+tmpfile_o=$(mktemp -p /build)
+tmpfile_n=$(mktemp -p /build)
 
-tmpdir_o=$(mktemp -d)
-tmpdir_n=$(mktemp -d)
+tmpdir_o=$(mktemp -d -p /build)
+tmpdir_n=$(mktemp -d -p /build)
 
 rc=0
 
