@@ -12,6 +12,7 @@ on: pull_request
 
 jobs:
   build-patches:
+    if:  ${{ !endsWith(github.head_ref, '_test') }}
     runs-on: rise-arc-runner-set-kernel
     timeout-minutes: 50400 # 35 days
     container:
