@@ -16,8 +16,6 @@ toolchain=$4
 output=$5
 install=$6
 
-debug_fragment=$d/kconfigs/defconfig/debug
-no_werror_fragment=$d/kconfigs/defconfig/no_werror
 triple=riscv64-linux-
 
 make_gcc() {
@@ -45,23 +43,21 @@ rm -rf ${output}
 mkdir -p ${output}
 mkdir -p "${install}/${name}"
 
-if [ $config == "allmodconfig" ]; then
-    make_wrap KCONFIG_ALLCONFIG=$lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config allmodconfig
-elif [ $config == "randconfig" ]; then
-    make_wrap KCONFIG_ALLCONFIG=$lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config randconfig
-    $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $output/.config $no_werror_fragment
-elif [ $config == "kselftest" ]; then
+if [[ $config == "allmodconfig" || $config == "randconfig" ]]; then
+    make_wrap KCONFIG_ALLCONFIG=$lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config $config
+    $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $output/.config \
+                                             <(echo "CONFIG_WERROR=n") \
+                                             <(echo "CONFIG_GCC_PLUGINS=n")
+elif [[ $config == "kselftest" ]]; then
     make_wrap defconfig
     make_wrap kselftest-merge
 else
     if [[ $fragment == "plain" ]]; then
         $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $lnxroot/arch/riscv/configs/$config \
-                                                 $debug_fragment \
                                                  $lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config
     else
         $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $lnxroot/arch/riscv/configs/$config \
                                                  $fragment \
-                                                 $debug_fragment \
                                                  $lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config
     fi
 
