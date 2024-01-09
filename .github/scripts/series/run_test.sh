@@ -19,11 +19,15 @@ rootfs=$2          #      rootfs_rv64_alpine_2023.03.13.tar.xz
 qemu_rv64 () {
     local bios=$1
     local cpu=$2
-    local kernel=$3
+    local krnl=$3
     local extra=$4
     local log=$5
 
-    timeout --foreground 120s qemu-system-riscv64 \
+    to=120
+    if [[ $kernel =~ "kasan" && $rootfs =~ "ubuntu" ]]; then
+	to=$(( $to * 2 ))
+    fi
+    timeout --foreground ${to}s qemu-system-riscv64 \
         -no-reboot \
         -bios $bios \
         -nodefaults \
@@ -33,7 +37,7 @@ qemu_rv64 () {
         -smp 4 \
         -object rng-random,filename=/dev/urandom,id=rng0 \
         -device virtio-rng-device,rng=rng0 \
-        -kernel $kernel \
+        -kernel $krnl \
         -append "root=/dev/vda2 rw earlycon console=tty0 console=ttyS0 panic=-1 oops=panic sysctl.vm.panic_on_oom=1" \
         -m 4G \
         -chardev stdio,id=char0,mux=on,signal=off,logfile="$log" \
