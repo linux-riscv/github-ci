@@ -77,7 +77,9 @@ $d/prepare_rootfs.sh $image $kernel $rootfs
 if [[ $kernel =~ "rv64" ]]; then
     list_cpus=( "rv64" "rv64,v=true,vlen=256,elen=64,h=true,zbkb=on,zbkc=on,zbkx=on,zkr=on,zkt=on,svinval=on,svnapot=on,svpbmt=on" )
     if grep -q 'CONFIG_RISCV_ALTERNATIVE_EARLY=y' $config; then
-        list_cpus+=( "sifive-u54" "thead-c906" )
+        list_cpus+=( "sifive-u54" )
+        # list_cpus+=( "thead-c906" )
+        # XXX Add veyron-v1?
     fi
 
     for cpu in "${list_cpus[@]}"; do
