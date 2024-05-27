@@ -55,11 +55,13 @@ elif [[ $config == "kselftest" ]]; then
 else
     if [[ $fragment == "plain" ]]; then
         $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $lnxroot/arch/riscv/configs/$config \
-                                                 $lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config
+                                                 $lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config \
+                                                 <(echo "CONFIG_KERNEL_UNCOMPRESSED=y")
     else
         $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $lnxroot/arch/riscv/configs/$config \
                                                  $fragment \
-                                                 $lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config
+                                                 $lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config \
+                                                 <(echo "CONFIG_KERNEL_UNCOMPRESSED=y")
     fi
 
     make_wrap olddefconfig
