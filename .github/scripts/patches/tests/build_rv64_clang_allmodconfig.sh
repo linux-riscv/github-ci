@@ -28,6 +28,7 @@ tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
         --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
         -o $tmpdir_o -b $tmpdir_b --toolchain llvm -z none --kconfig allmodconfig \
         -K CONFIG_WERROR=n -K CONFIG_RANDSTRUCT_NONE=y -K CONFIG_SAMPLES=n W=1 \
+        -K CONFIG_DRM_WERROR=n \
         CROSS_COMPILE=riscv64-linux- \
         config default \
         >$tmpfile_e 2>/dev/null || rc=1
@@ -49,6 +50,7 @@ tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
         --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
         -o $tmpdir_o -b $tmpdir_b --toolchain llvm -z none --kconfig allmodconfig \
         -K CONFIG_WERROR=n -K CONFIG_RANDSTRUCT_NONE=y W=1 \
+        -K CONFIG_DRM_WERROR=n \
         CROSS_COMPILE=riscv64-linux- \
         config default \
         >$tmpfile_o 2>/dev/null
@@ -64,6 +66,7 @@ tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
         --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
         -o $tmpdir_o -b $tmpdir_b --toolchain llvm -z none --kconfig allmodconfig \
         -K CONFIG_WERROR=n -K CONFIG_RANDSTRUCT_NONE=y W=1 \
+        -K CONFIG_DRM_WERROR=n \
         CROSS_COMPILE=riscv64-linux- \
         config default \
         >$tmpfile_n 2>/dev/null || rc=1

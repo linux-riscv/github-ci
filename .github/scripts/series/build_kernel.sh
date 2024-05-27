@@ -47,6 +47,7 @@ if [[ $config == "allmodconfig" || $config == "randconfig" ]]; then
     make_wrap KCONFIG_ALLCONFIG=$lnxroot/arch/riscv/configs/${xlen//rv/}-bit.config $config
     $lnxroot/scripts/kconfig/merge_config.sh -m -O $output $output/.config \
                                              <(echo "CONFIG_WERROR=n") \
+                                             <(echo "CONFIG_DRM_WERROR=n") \
                                              <(echo "CONFIG_GCC_PLUGINS=n")
 elif [[ $config == "kselftest" ]]; then
     make_wrap defconfig
