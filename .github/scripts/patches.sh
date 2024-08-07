@@ -19,15 +19,11 @@ patch_tot=${#patches[@]}
 rc=0
 cnt=1
 
-(while true ; do sleep 30; echo .; done) &
-progress=$!
-
 parallel -j 4 --joblog ${parallel_log} --colsep=, bash ${d}/patches/patch_tester.sh \
 	 {1} {2} {3} :::: <(
     for i in "${patches[@]}"; do
         echo ${i},${cnt},${patch_tot}
         cnt=$(( cnt + 1 ))
     done) || rc=1
-kill $progress
 cat ${parallel_log}
 

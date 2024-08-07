@@ -9,11 +9,7 @@ d=$(dirname "${BASH_SOURCE[0]}")
 
 $d/prepare_tests.sh
 
-(while true ; do sleep 30; echo .; done) &
-progress=$!
-
 parallel_log=$(mktemp -p /build)
-parallel -j 48 --colsep ' ' --joblog ${parallel_log} \
+parallel -j $(($(nproc)-1)) --colsep ' ' --joblog ${parallel_log} \
          ${d}/test_runner.sh {1} {2} {3} {4} {5} :::: <($d/generate_test_runs.sh) || true
-kill $progress
 cat ${parallel_log}
