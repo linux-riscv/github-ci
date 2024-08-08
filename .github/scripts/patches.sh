@@ -19,6 +19,14 @@ patch_tot=${#patches[@]}
 rc=0
 cnt=1
 
+# Linear
+for i in "${patches[@]}"; do
+    time bash ${d}/patches/patch_tester.sh ${i} ${cnt} ${patch_tot} || rc=1
+    cnt=$(( cnt + 1 ))
+done
+exit 0
+
+# Parallel... (slower?)
 parallel -j 4 --joblog ${parallel_log} --colsep=, bash ${d}/patches/patch_tester.sh \
 	 {1} {2} {3} :::: <(
     for i in "${patches[@]}"; do
