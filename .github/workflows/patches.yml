@@ -18,6 +18,7 @@ jobs:
     container:
       image: ghcr.io/linux-riscv/pw-builder:latest
       volumes:
+        - /home/github/ramdisk/build:/build
         - /home/github/ccache:/build/ccache
         - /home/github/gitref:/build/gitref
     steps:

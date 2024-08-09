@@ -3,7 +3,7 @@
 #
 # Copyright (c) 2022 by Rivos Inc.
 
-tmpdir=build
+tmpdir=$(mktemp -d -p /build)
 tmpfile=$(mktemp -p /build)
 rc=0
 

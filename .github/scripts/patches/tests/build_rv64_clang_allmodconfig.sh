@@ -8,22 +8,13 @@
 tmpfile_e=$(mktemp -p /build)
 tmpfile_o=$(mktemp -p /build)
 tmpfile_n=$(mktemp -p /build)
-
-tmpdir_b=build_llvm
-tmpdir_o=output
+tmpdir_b=$(mktemp -d -p /build)
+tmpdir_o=$(mktemp -d -p /build)
 
 rc=0
 
-echo "Redirect to $tmpfile_o and $tmpfile_n"
-
-HEAD=$(git rev-parse HEAD)
-
-echo "Tree base:"
-git log -1 --pretty='%h ("%s")' HEAD~
-
-echo "Building the whole tree with the patch"
-
-tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
+build() {
+    tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
         --environment=KBUILD_BUILD_TIMESTAMP=@1621270510 \
         --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
         -o $tmpdir_o -b $tmpdir_b --toolchain llvm -z none --kconfig allmodconfig \
@@ -31,46 +22,30 @@ tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
         -K CONFIG_DRM_WERROR=n \
         W=1 CROSS_COMPILE=riscv64-linux- \
         config default \
-        >$tmpfile_e 2>/dev/null || rc=1
+        >$1 2>/dev/null
+}
 
+echo "Redirect to $tmpfile_o and $tmpfile_n"
+echo "Tree base:"
+HEAD=$(git rev-parse HEAD)
+git log -1 --pretty='%h ("%s")' HEAD~
+
+echo "Building the whole tree with the patch"
+time build $tmpfile_e || rc=1
 if [ $rc -eq 1 ]; then
         grep "\(error\):" $tmpfile_e
         rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b $tmpfile_e
         exit $rc
 fi
 
-current=$(grep -c "\(warning\|error\):" $tmpfile_n)
-
 git checkout -q HEAD~
-
 echo "Building the tree before the patch"
-
-tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
-        --environment=KBUILD_BUILD_TIMESTAMP=@1621270510 \
-        --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
-        -o $tmpdir_o -b $tmpdir_b --toolchain llvm -z none --kconfig allmodconfig \
-        -K CONFIG_WERROR=n -K CONFIG_RANDSTRUCT_NONE=y \
-        -K CONFIG_DRM_WERROR=n \
-        W=1 CROSS_COMPILE=riscv64-linux- \
-        config default \
-        >$tmpfile_o 2>/dev/null
-
+time build $tmpfile_o
 incumbent=$(grep -c "\(warning\|error\):" $tmpfile_o)
 
 git checkout -q $HEAD
-
 echo "Building the tree with the patch"
-
-tuxmake --wrapper ccache --target-arch riscv -e PATH=$PATH --directory . \
-        --environment=KBUILD_BUILD_TIMESTAMP=@1621270510 \
-        --environment=KBUILD_BUILD_USER=tuxmake --environment=KBUILD_BUILD_HOST=tuxmake \
-        -o $tmpdir_o -b $tmpdir_b --toolchain llvm -z none --kconfig allmodconfig \
-        -K CONFIG_WERROR=n -K CONFIG_RANDSTRUCT_NONE=y \
-        -K CONFIG_DRM_WERROR=n \
-        W=1 CROSS_COMPILE=riscv64-linux- \
-        config default \
-        >$tmpfile_n 2>/dev/null || rc=1
-
+time build $tmpfile_n || rc=1
 if [ $rc -eq 1 ]; then
         grep "\(warning\|error\):" $tmpfile_n
         rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b
@@ -78,7 +53,6 @@ if [ $rc -eq 1 ]; then
 fi
 
 current=$(grep -c "\(warning\|error\):" $tmpfile_n)
-
 if [ $current -gt $incumbent ]; then
         echo "New errors added:"
 
@@ -107,5 +81,4 @@ if [ $current -gt $incumbent ]; then
 fi
 
 rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b $tmpfile_e
-
 exit $rc
