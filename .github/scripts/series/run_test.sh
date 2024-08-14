@@ -53,9 +53,13 @@ check_boot () {
     export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
     shutdown="$(guestfish --ro -a "$image" -i cat /shutdown-status 2>/dev/null)"
     if [[ $shutdown == "clean" ]]; then
-        echo "$n OK"
         guestfish --rw -a "$image" -i download /dmesg ${log_dir}/${n}-dmesg
         guestfish --rw -a $image -i rm /shutdown-status || true
+        if grep -q "BUG: " ${log_dir}/${n}-dmesg; then
+            echo "$n FAIL"
+            exit 1
+        fi
+        echo "$n OK"
     else
         echo "$n FAIL"
         exit 1
