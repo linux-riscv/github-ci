@@ -50,7 +50,7 @@ check_boot () {
     local n=$1
 
     # Soft fallback to TCG is broken on aarch64, but forcing TCG works.
-    export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
+    export LIBGUESTFS_BACKEND_SETTINGS=force_kvm
     shutdown="$(guestfish --ro -a "$image" -i cat /shutdown-status 2>/dev/null)"
     if [[ $shutdown == "clean" ]]; then
         guestfish --rw -a "$image" -i download /dmesg ${log_dir}/${n}-dmesg
