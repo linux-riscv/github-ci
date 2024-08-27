@@ -23,7 +23,7 @@ qemu_rv64 () {
     local extra=$4
     local log=$5
 
-    to=120
+    to=240
     if [[ $kernel =~ "kasan" && $rootfs =~ "ubuntu" ]]; then
 	to=$(( $to * 2 ))
     fi
