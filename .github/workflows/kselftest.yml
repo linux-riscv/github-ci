@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2023 Rivos Inc.
+# SPDX-FileCopyrightText: 2024 Rivos Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 
-name: linux-riscv-ci-series
+name: linux-riscv-ci-kselftest
 
 defaults:
   run:
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build-series:
-    if:  ${{ endsWith(github.head_ref, '_test') }}
+    if:  ${{ startsWith(github.head_ref, 'bpf') || startsWith(github.head_ref, 'linus') }}
     runs-on: self-hosted
     timeout-minutes: 50400 # 35 days
     container:
@@ -40,7 +40,7 @@ jobs:
           git log -1
       - name: Run checks
         run: |
-          cd /build/my-linux && bash .github/scripts/series.sh
+          cd /build/my-linux && bash .github/scripts/kselftest.sh
       - name: Collect logs
         uses: actions/upload-artifact@v4
         with:

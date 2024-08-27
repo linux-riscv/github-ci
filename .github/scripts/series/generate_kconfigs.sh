@@ -63,6 +63,3 @@ done
 #special case set KCONFIG_ALLCONFIG
 print rv32 allmodconfig "plain"
 print rv64 allmodconfig "plain"
-
-# print rv32 randconfig "plain"
-# print rv64 randconfig "plain"

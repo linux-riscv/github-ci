@@ -33,6 +33,7 @@ while read xlen config fragment image toolchain; do
         continue
     fi
     if [[ "$config" =~ "kselftest" ]]; then
+        print $xlen $config $fragment $image $toolchain ubuntu
         continue
     fi
 
@@ -41,5 +42,6 @@ while read xlen config fragment image toolchain; do
         print $xlen $config $fragment $image $toolchain ubuntu
     else
         print $xlen $config $fragment $image $toolchain buildroot_glibc
+        print $xlen $config $fragment $image $toolchain buildroot_musl
     fi
 done < <($d/generate_build_configs.sh)

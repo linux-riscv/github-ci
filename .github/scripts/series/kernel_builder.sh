@@ -6,27 +6,24 @@
 set -euo pipefail
 
 d=$(dirname "${BASH_SOURCE[0]}")
-
-build_dir=$(mktemp -d -p /build)
-install_dir=/build/kernels
-log_dir=/build/kernels/logs
+. $d/utils.sh
 
 xlen=$1
 config=$2
 fragment=$3
 toolchain=$4
 
-n="${xlen}_${toolchain}_${config//_/-}_$(basename $fragment)"
-
-echo "::group::Building linux_${n}"
+tm=$(mktemp -p ${ci_root})
+n=$(gen_kernel_name $xlen $config $fragment $toolchain)
+logs=$(get_logs_dir)
 rc=0
-$d/build_kernel.sh "${xlen}" "${config}" "${fragment}" "${toolchain}" \
-                   "${build_dir}" "${install_dir}" \
-                   > "${log_dir}/build_kernel_${n}.log" 2>&1 || rc=$?
-rm -rf ${build_dir}
-echo "::endgroup::"
+log="build_kernel___${n}.log"
+\time --quiet -o $tm -f "took %es" \
+      $d/build_kernel.sh "${xlen}" "${config}" "${fragment}" "${toolchain}" &> "${logs}/${log}" || rc=$?
 if (( $rc )); then
-    echo "::error::FAIL linux_${n}"
+    echo "::error::FAIL Build kernel ${n} \"${log}\" $(cat $tm)"
 else
-    echo "::notice::OK linux_${n}"
+    echo "::notice::OK Build kernel ${n} $(cat $tm)"
 fi
+rm $tm
+exit $rc
