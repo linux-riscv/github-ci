@@ -157,11 +157,15 @@ fi
 
 qemu_to=120
 if [[ $rootfs == "ubuntu" ]]; then
-	qemu_to=$(( $qemu_to * 3 ))
+    qemu_to=$(( $qemu_to * 3 ))
 fi
 if [[ $config =~ kselftest ]]; then
     qemu_to=$((2 * 24 * 3600)) # 40h
 fi
+if [[ $config =~ lockdep ]]; then
+    qemu_to=$(( $qemu_to * 10 ))
+fi
+
 qemu_log=${tmp}/qemu.log
 qemu_bios=${ci_root}/firmware/${xlen}/fw_dynamic.bin
 qemu_kernel=$(fw_to_qemu $fw $vmlinuz)
