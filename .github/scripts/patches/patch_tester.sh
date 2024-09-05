@@ -11,6 +11,8 @@ sha1=$1
 patch_num=$2
 patch_tot=$3
 
+tm=$(mktemp -p /build)
+
 worktree=$(mktemp -d -p /build)
 git worktree add $worktree ${sha1} &>/dev/null
 cd $worktree
@@ -23,20 +25,21 @@ for j in "${tests[@]}"; do
     msg="Patch ${patch_num}/${patch_tot}: Test ${tcnt}/${#tests[@]}: ${j}"
     echo "::group::${msg}"
     testrc=0
-    bash ${j} || testrc=$?
+    \time --quiet -o $tm -f "took %es" \
+          bash ${j} || testrc=$?
     echo "::endgroup::"
     if (( $testrc == 250 )); then
         rc=1
-        echo "::warning::WARN ${msg}"
+        echo "::warning::WARN ${msg} $(cat $tm)"
     elif (( $testrc )); then
         rc=1
-        echo "::error::FAIL ${msg}"
+        echo "::error::FAIL ${msg} $(cat $tm)"
     else
-        echo "::notice::OK ${msg}"
+        echo "::notice::OK ${msg} $(cat $tm)"
     fi
     tcnt=$(( tcnt + 1 ))
 done
 
 git worktree remove $worktree &>/dev/null || true
-
+rm $tm
 exit $rc

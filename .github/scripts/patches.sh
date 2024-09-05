@@ -15,15 +15,19 @@ echo "git-tip begin"
 git log -1 $(git log -1 --pretty=%H .github/scripts/patches.sh)^
 echo "git-tip end"
 
+tm=$(mktemp -p /build)
 patch_tot=${#patches[@]}
 rc=0
 cnt=1
 
 # Linear
 for i in "${patches[@]}"; do
-    time bash ${d}/patches/patch_tester.sh ${i} ${cnt} ${patch_tot} || rc=1
+    \time --quiet -o $tm -f "took %es" \
+	  bash ${d}/patches/patch_tester.sh ${i} ${cnt} ${patch_tot} || rc=1
+    echo "::notice::Patch ${cnt}/${patch_tot} $(cat $tm)"
     cnt=$(( cnt + 1 ))
 done
+rm $tm
 exit 0
 
 # Parallel... (slower?)
