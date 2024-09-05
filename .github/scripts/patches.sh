@@ -11,12 +11,15 @@ parallel_log=$(mktemp -p /build)
 basesha=$(git log -1 --pretty=%H .github/scripts/patches.sh)
 patches=( $(git rev-list --reverse ${basesha}..HEAD) )
 
-echo "git-tip begin"
-git log -1 $(git log -1 --pretty=%H .github/scripts/patches.sh)^
-echo "git-tip end"
+patch_tot=${#patches[@]}
+num_commits=$((patch_tot + 3))
+
+date -Iseconds
+echo "Run PW tests"
+echo "Top ${num_commits} commits"
+git log -${num_commits} --abbrev=12 --pretty="commit %h (\"%s\")"
 
 tm=$(mktemp -p /build)
-patch_tot=${#patches[@]}
 rc=0
 cnt=1
 
