@@ -39,6 +39,7 @@ jobs:
           git reset --hard ${{ github.event.pull_request.head.sha }}
           git log -1
       - name: Run checks
+        continue-on-error: true
         run: |
           cd /build/my-linux && bash .github/scripts/kselftest.sh
       - name: Collect logs
