@@ -101,7 +101,7 @@ EOF
             ;;
         *)
             cat >>$tmp/dotest <<EOF
-for i in \$(./run_kselftest.sh -l|awk -F: '{print \$1}' |uniq |egrep -v 'bpf|net|lkdtm|breakpoints'); do
+for i in \$(./run_kselftest.sh -l | egrep '^[/a-z0-9]+:' | awk -F: '{print \$1}' |uniq |egrep -v 'bpf|net|lkdtm|breakpoints'); do
     echo "TEST  \$i"
     ./run_kselftest.sh -o 3600 -c \$i
 done
