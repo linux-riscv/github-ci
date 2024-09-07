@@ -162,7 +162,7 @@ fi
 if [[ $config =~ kselftest ]]; then
     qemu_to=$((2 * 24 * 3600)) # 40h
 fi
-if [[ $config =~ lockdep ]]; then
+if [[ $fragment =~ lockdep ]]; then
     qemu_to=$(( $qemu_to * 10 ))
 fi
 
