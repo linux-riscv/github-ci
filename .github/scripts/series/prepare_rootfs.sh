@@ -84,6 +84,7 @@ if [[ $tst =~ kselftest ]]; then
 set -x
 echo "<5>Hello kselftest" > /dev/kmsg
 cd /kselftest
+export PATH=${PATH}:/kselftest/bpf/tools/sbin
 
 EOF
     case ${tst} in
