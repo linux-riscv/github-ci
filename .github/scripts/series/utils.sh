@@ -16,7 +16,7 @@ apply_patches() {
 	if ls ${ci_patches}/*.patch &> /dev/null; then
 	    for i in ${ci_patches}/*.patch; do
 		if git apply --check -q $i; then
-		    git apply -q $i
+		    git apply --index -q $i
 		fi
 	    done
 	fi
