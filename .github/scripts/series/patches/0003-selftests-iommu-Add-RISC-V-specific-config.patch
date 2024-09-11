@@ -1,7 +1,7 @@
-From 93380c14fbc94a5fbd2221a21ec5216a3b824f55 Mon Sep 17 00:00:00 2001
+From 06586b3f06e5f16504967407126684b5d78aed60 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
 Date: Tue, 27 Aug 2024 17:27:18 +0000
-Subject: [PATCH 3/5] selftests: iommu: Add RISC-V specific config
+Subject: [PATCH 3/6] selftests: iommu: Add RISC-V specific config
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

@@ -1,7 +1,7 @@
-From af1fadfebe23d7a1eacbca9df5d455337b001085 Mon Sep 17 00:00:00 2001
+From 0e22720f7f4c1cbed83c032ca4b8bc50d2f7aeb5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
 Date: Thu, 22 Aug 2024 16:27:16 +0000
-Subject: [PATCH 4/5] selftests: exec: Remove static-pie
+Subject: [PATCH 4/6] selftests: exec: Remove static-pie
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

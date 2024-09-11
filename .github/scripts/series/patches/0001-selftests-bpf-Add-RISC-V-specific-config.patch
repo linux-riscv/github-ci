@@ -1,7 +1,7 @@
-From 76931d2a6cd8db9b7e60280d723db5b86a1291b5 Mon Sep 17 00:00:00 2001
+From 611f4103494e5847190d8d8b22c15a496441c075 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
 Date: Tue, 27 Aug 2024 17:21:12 +0000
-Subject: [PATCH 1/5] selftests: bpf: Add RISC-V specific config
+Subject: [PATCH 1/6] selftests: bpf: Add RISC-V specific config
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,7 +41,7 @@ index 000000000000..9124d1549a1a
 +CONFIG_NONPORTABLE=y
 +CONFIG_RISCV_EFFICIENT_UNALIGNED_ACCESS=y
 
-base-commit: 20371ba120635d9ab7fc7670497105af8f33eb08
+base-commit: 8d8d276ba2fb5f9ac4984f5c10ae60858090babc
 -- 
 2.43.0
 

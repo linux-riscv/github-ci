@@ -1,7 +1,7 @@
-From da7c1c4022212c6c3cbe54b97651a0a9c3d08587 Mon Sep 17 00:00:00 2001
+From af4e24f21714ca1ffdedeba5fd2e587328b35823 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
 Date: Thu, 22 Aug 2024 16:26:22 +0000
-Subject: [PATCH 2/5] selftests: bpf: Rename fallback
+Subject: [PATCH 2/6] selftests: bpf: Rename fallback
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
