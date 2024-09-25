@@ -60,6 +60,7 @@ generate_qemu_subtests() {
 			    if (( ${ci_test_selftests} )); then
 				qemu_subtests+=( "$cpu $fw $hw kselftest-bpf" )
 				qemu_subtests+=( "$cpu $fw $hw kselftest-net" )
+				qemu_subtests+=( "$cpu $fw $hw kselftest-ftrace" )
 				qemu_subtests+=( "$cpu $fw $hw kselftest" )
 			    fi
 			fi

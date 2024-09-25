@@ -88,6 +88,13 @@ export PATH=${PATH}:/kselftest/bpf/tools/sbin
 
 EOF
     case ${tst} in
+        "kselftest-ftrace")
+            cat >>$tmp/dotest <<EOF
+echo "TEST ftrace"
+./run_kselftest.sh -o 3600 -c ftrace
+EOF
+            ;;
+    case ${tst} in
         "kselftest-net")
             cat >>$tmp/dotest <<EOF
 echo "TEST net"
@@ -97,12 +104,12 @@ EOF
         "kselftest-bpf")
             cat >>$tmp/dotest <<EOF
 echo "TEST bpf"
-./run_kselftest.sh -o 7200 -c bpf
+./run_kselftest.sh -o 9000 -c bpf
 EOF
             ;;
         *)
             cat >>$tmp/dotest <<EOF
-for i in \$(./run_kselftest.sh -l | egrep '^[/a-z0-9]+:' | awk -F: '{print \$1}' |uniq |egrep -v 'bpf|net|lkdtm|breakpoints'); do
+for i in \$(./run_kselftest.sh -l | egrep '^[/a-z0-9]+:' | awk -F: '{print \$1}' |uniq |egrep -v 'bpf|net|ftrace|lkdtm|breakpoints'); do
     echo "TEST  \$i"
     ./run_kselftest.sh -o 3600 -c \$i
 done
