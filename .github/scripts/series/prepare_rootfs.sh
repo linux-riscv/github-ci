@@ -94,7 +94,6 @@ echo "TEST ftrace"
 ./run_kselftest.sh -o 3600 -c ftrace
 EOF
             ;;
-    case ${tst} in
         "kselftest-net")
             cat >>$tmp/dotest <<EOF
 echo "TEST net"
