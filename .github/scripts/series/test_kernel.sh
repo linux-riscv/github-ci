@@ -36,6 +36,9 @@ cpu_to_qemu() {
 	"server64")
 	    echo "rv64,v=true,vlen=256,elen=64,h=true,zbkb=on,zbkc=on,zbkx=on,zkr=on,zkt=on,svinval=on,svnapot=on,svpbmt=on"
 	    ;;
+	"max64")
+	    echo "max"
+	    ;;
 	"sifive")
 	    echo "sifive-u54"
 	    ;;
@@ -46,15 +49,20 @@ cpu_to_qemu() {
 }
 
 fw_to_qemu() {
-    local fw=$1
-    local vmlinuz=$2
+    local hw=$1
+    local fw=$2
+    local vmlinuz=$3
 
     case "$fw" in
 	"no_uefi")
 	    echo "$vmlinuz"
 	    ;;
 	"uboot_uefi")
-	    echo "${ci_root}/firmware/rv64/rv64-u-boot.bin"
+	    if [[ ${hw} == "acpi" ]]; then
+		echo "${ci_root}/firmware/rv64/rv64-u-boot-acpi.bin"
+	    else
+		echo "${ci_root}/firmware/rv64/rv64-u-boot.bin"
+	    fi
 	    ;;
 	*)
 	    echo "BADFW"
@@ -71,13 +79,14 @@ qemu_rv64 () {
     local qemu_kernel=$4
     local qemu_cpu=$5
     local qemu_acpi=$6
-    local qemu_image=$7
+    local qemu_aia=$7
+    local qemu_image=$8
 
     timeout --foreground ${qemu_to}s qemu-system-riscv64 \
         -no-reboot \
         -nodefaults \
         -nographic \
-        -machine virt,acpi=${qemu_acpi} \
+        -machine virt,acpi=${qemu_acpi},aia=${qemu_aia} \
         -smp 4 \
         -bios ${qemu_bios} \
         -cpu ${qemu_cpu} \
@@ -99,7 +108,8 @@ qemu_rv32 () {
     local qemu_kernel=$4
     local qemu_cpu=$5
     local qemu_acpi=$6
-    local qemu_image=$7
+    local qemu_aia=$7
+    local qemu_image=$8
 
     timeout --foreground ${qemu_to}s qemu-system-riscv32 \
         -no-reboot \
@@ -171,12 +181,21 @@ fi
 
 qemu_log=${tmp}/qemu.log
 qemu_bios=${ci_root}/firmware/${xlen}/fw_dynamic.bin
-qemu_kernel=$(fw_to_qemu $fw $vmlinuz)
+qemu_kernel=$(fw_to_qemu $hw $fw $vmlinuz)
 qemu_cpu=$(cpu_to_qemu $cpu)
+
 qemu_acpi=off
+if [[ ${hw} == "acpi" ]]; then
+    qemu_acpi=on
+    qemu_kernel_append="${qemu_kernel_append} acpi=force"
+fi
+qemu_aia=none
+if [[ ${cpu} == "server64" || ${cpu} == "max64"  ]]; then
+    qemu_aia="aplic-imsic"
+fi
 
 export TIMEFORMAT="took qemu %0R"
-time qemu_${xlen} ${qemu_to} ${qemu_log} ${qemu_bios} ${qemu_kernel} ${qemu_cpu} ${qemu_acpi} ${qemu_image}
+time qemu_${xlen} ${qemu_to} ${qemu_log} ${qemu_bios} ${qemu_kernel} ${qemu_cpu} ${qemu_acpi} ${qemu_aia} ${qemu_image}
 
 export TIMEFORMAT="took check_shutdown %0R"
 time check_shutdown $qemu_image || rc=$?
