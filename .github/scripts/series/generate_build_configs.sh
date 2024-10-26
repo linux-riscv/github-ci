@@ -32,3 +32,5 @@ while read xlen config fragment; do
         echo $xlen $config $fragment llvm
     fi
 done < <($d/generate_kconfigs.sh)
+
+echo rv64 allmodconfig plain gcc-old

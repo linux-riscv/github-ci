@@ -36,8 +36,13 @@ make_llvm() {
 }
 
 make_wrap() {
-    if [ $toolchain == "llvm" ]; then
+    if [[ $toolchain == "llvm" ]]; then
         make_llvm $*
+    elif [[ $toolchain == "gcc-old" ]]; then
+        oldpath=${PATH}
+        export PATH=/opt/gcc-old/riscv64-linux/bin:${oldpath}
+        make_gcc $*
+        export PATH=${oldpath}
     else
         make_gcc $*
     fi
