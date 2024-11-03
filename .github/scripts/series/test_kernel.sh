@@ -34,7 +34,7 @@ cpu_to_qemu() {
 	    echo "rv64"
 	    ;;
 	"server64")
-	    echo "rv64,v=true,vlen=256,elen=64,h=true,zbkb=on,zbkc=on,zbkx=on,zkr=on,zkt=on,svinval=on,svnapot=on,svpbmt=on"
+	    echo "rv64,v=true,vlen=256,elen=64,h=true,zbkb=on,zbkc=on,zbkx=on,zkr=on,zkt=on,svinval=on,svnapot=on,svpbmt=on,zabha=on,zacas=on"
 	    ;;
 	"max64")
 	    echo "max"
