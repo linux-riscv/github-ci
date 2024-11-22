@@ -20,6 +20,14 @@ build_name=`git describe --tags`
 ${d}/series/build_all.sh | tee -a ${f}
 ${d}/series/test_all.sh | tee -a ${f}
 
-python3 ${d}/series/github_ci_squad_results.py --logs-path ${logs}
+# Some logs contain invalid bytes (not utf-8) and then makes the following
+# script fail so convert them all.
+for f in `ls ${logs}`; do
+    iconv -c -t utf-8 ${logs}/${f} > ${logs}/${f}_tmp
+    mv ${logs}/${f}_tmp ${logs}/${f}
+done
 
-curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@${logs}/squad.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/$build_name/qemu
+python3 ${d}/series/github_ci_squad_results.py --logs-path ${logs}
+python3 ${d}/series/generate_metadata.py --logs-path ${logs} --job-url ${GITHUB_JOB_URL}
+
+curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@${logs}/squad.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/$build_name/qemu --form metadata=@${logs}/metadata.json
