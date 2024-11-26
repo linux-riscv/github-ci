@@ -139,9 +139,12 @@ check_shutdown () {
     if [[ $shutdown == "clean" ]]; then
 	f=$(mktemp -p ${tmp})
         guestfish --rw -a "$image" -i download /dmesg $f
-        if grep -q "BUG: " $f; then
-            rc=1
-        fi
+        fail_str=( "\-+\\[ cut here \\]-+\\s+(.*\\s+-+\\[ end trace (\\w*) \\]-+)" "(Unhandled fault.*)\\r\\n" "Kernel panic - (.*) end Kernel panic" "Stack:\\s+(.*\\s+-+\\[ end trace (\\w*) \\]-+)" "^[^\\n]+WARNING:.*?$" "^[^\\n]+Oops(?: -|:).*?$" "^[^\\n]+BUG:.*?$" )
+        for fail in "${fail_str[@]}"; do
+            if grep -E "$fail" $f; then
+                rc=1
+            fi
+        done
     else
 	rc=1
     fi
