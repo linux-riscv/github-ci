@@ -26,10 +26,12 @@ def parse_args():
     parser = argparse.ArgumentParser(description = 'Output Squad tests results for tuxrun LTP')
     parser.add_argument("--result-path", default = "",
             help = 'Path to the tuxrun JSON result file')
+    parser.add_argument("--testsuite", default = "",
+            help = 'Testsuite name')
 
     return parser.parse_args()
 
-def generate_squad_json(result_path):
+def generate_squad_json(result_path, testsuite):
     dict_results = {}
 
     with open(result_path, "r") as f:
@@ -37,7 +39,7 @@ def generate_squad_json(result_path):
 
     # Search only the first dimension for keys starting with "ltp-"
     for k, v in dict_initial.items():
-        if k.startswith("ltp-"):
+        if k.startswith(testsuite):
             for ltp_key, ltp_value in v.items():
                 dict_results[k + "/" + ltp_key] = ltp_value
 
@@ -48,5 +50,5 @@ def generate_squad_json(result_path):
 
 if __name__ == "__main__":
     args = parse_args()
-    generate_squad_json(args.result_path)
+    generate_squad_json(args.result_path, args.testsuite)
 
