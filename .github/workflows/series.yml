@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build-series:
-    if:  ${{ endsWith(github.head_ref, '_test') }}
+    if:  ${{ endsWith(github.head_ref, '_test') || endsWith(github.head_ref, '_manual') }}
     runs-on: self-hosted
     timeout-minutes: 50400 # 35 days
     container:
@@ -40,7 +40,7 @@ jobs:
           git log -1
       - name: Run checks
         env:
-          SQUAD_TOKEN: ${{ secrets.SQUAD_TOKEN_ALEX }}
+          SQUAD_TOKEN: ${{ secrets.SQUAD_TOKEN }}
           GITHUB_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         continue-on-error: true
         run: |

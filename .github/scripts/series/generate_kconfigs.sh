@@ -12,6 +12,9 @@ kconfigs=$d/kconfigs
 builtin_skip="rv32_defconfig"
 builtin_allow=""
 
+# Too much? Override by uncommenting below:
+# echo rv64 defconfig "" && exit 0
+
 print() {
     if [ ! -z "${SKIP_KCONFIG:-}" ]; then
         if echo $* | egrep -q "$SKIP_KCONFIG"; then
@@ -38,9 +41,6 @@ print() {
 
     echo $*
 }
-
-# Too much? Override by uncommenting below:
-# print rv64 defconfig "plain" && exit 0
 
 defconfigs=$(find $lnxroot/arch/riscv/configs/ -type f -name '*defconfig' -printf '%f\n')
 for i in $defconfigs; do

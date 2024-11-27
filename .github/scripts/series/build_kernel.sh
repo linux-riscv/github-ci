@@ -68,7 +68,7 @@ elif [[ $config == "kselftest" ]]; then
 					     <(echo "CONFIG_KERNEL_UNCOMPRESSED=y")
     make_wrap olddefconfig
     keep_build=1
-elif [[ $config == "ltp" ]]; then
+elif [[ $config == "testsuites" ]]; then
     make_wrap ubuntu_defconfig
 else
     if [[ $fragment == "plain" ]]; then
