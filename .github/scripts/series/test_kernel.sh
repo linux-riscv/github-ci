@@ -168,15 +168,17 @@ fi
 qemu_to=120
 if [[ $rootfs == "ubuntu" ]]; then
     qemu_to=$(( $qemu_to * 3 ))
-    if [[ $fragment =~ nosmp ]]; then
-	qemu_to=$(( $qemu_to * 10 ))
+    if [[ $fragment =~ nosmp || $fragment =~ lockdep || $fragment =~ kasan || $fragment =~ kfence  ]]; then
+        qemu_to=$(( $qemu_to * 10 ))
+    fi
+else
+    if [[ $fragment =~ lockdep ]]; then
+        qemu_to=$(( $qemu_to * 10 ))
     fi
 fi
+
 if [[ $config =~ kselftest ]]; then
     qemu_to=$((2 * 24 * 3600)) # 40h
-fi
-if [[ $fragment =~ lockdep ]]; then
-    qemu_to=$(( $qemu_to * 10 ))
 fi
 
 qemu_log=${tmp}/qemu.log
