@@ -13,7 +13,7 @@ builtin_skip="rv32_defconfig"
 builtin_allow=""
 
 # Too much? Override by uncommenting below:
-# echo rv64 defconfig "" && exit 0
+echo rv64 defconfig "" && exit 0
 
 print() {
     if [ ! -z "${SKIP_KCONFIG:-}" ]; then

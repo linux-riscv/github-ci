@@ -15,6 +15,11 @@ date -Iseconds | tee -a ${f}
 echo "Build, and boot various kernels" | tee -a ${f}
 echo "Top 16 commits" | tee -a ${f}
 git log -16 --abbrev=12 --pretty="commit %h (\"%s\")" | tee -a ${f}
+build_name=`git describe --tags`
 
 ${d}/series/build_all.sh | tee -a ${f}
 ${d}/series/test_all.sh | tee -a ${f}
+
+python3 ${d}/series/github_ci_squad_results.py --logs-path ${logs}
+
+curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@${logs}/squad.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/$build_name/qemu
