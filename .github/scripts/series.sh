@@ -28,6 +28,6 @@ for f in `ls ${logs}`; do
 done
 
 python3 ${d}/series/github_ci_squad_results.py --logs-path ${logs}
-python3 ${d}/series/generate_metadata.py --logs-path ${logs} --job-url ${GITHUB_JOB_URL}
+python3 ${d}/series/generate_metadata.py --logs-path ${logs} --job-url ${GITHUB_JOB_URL} --branch ${GITHUB_BRANCH_NAME}
 
 curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@${logs}/squad.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/$build_name/qemu --form metadata=@${logs}/metadata.json
