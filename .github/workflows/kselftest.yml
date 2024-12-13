@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build-series:
-    if:  ${{ startsWith(github.head_ref, 'bpf') || startsWith(github.head_ref, 'linus') }}
+    if:  ${{ startsWith(github.head_ref, 'linus') }}
     runs-on: self-hosted
     timeout-minutes: 50400 # 35 days
     container:
@@ -47,3 +47,13 @@ jobs:
         with:
           name: test-logs
           path: /build/logs/*
+      - name: Publish to SQUAD
+        run: |
+          /build/my-linux/.github/scripts/series/post_to_squad.py \
+            --toplevel-log=/build/logs/kselftest.log  \
+            --selftest-bpf-log=/build/logstest_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest-bpf.log \
+            --selftest-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest.log \
+            --selftest-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest-ftrace.log \
+            --selftest-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest-net.log \
+            --job-url="${GITHUB_JOB_URL}" \
+            --git-ref="${{ github.head_ref || github.ref_name }}"
