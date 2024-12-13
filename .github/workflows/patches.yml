@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build-patches:
-    if:  ${{ !endsWith(github.head_ref, '_test') }}
+    if:  ${{ contains(github.head_ref, 'series/') }}
     runs-on: self-hosted
     timeout-minutes: 50400 # 35 days
     container:
