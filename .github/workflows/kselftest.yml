@@ -48,6 +48,9 @@ jobs:
           name: test-logs
           path: /build/logs/*
       - name: Publish to SQUAD
+        env:
+          SQUAD_TOKEN: ${{ secrets.SQUAD_TOKEN }}
+          GITHUB_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           /build/my-linux/.github/scripts/series/post_to_squad.py \
             --toplevel-log=/build/logs/kselftest.log  \
