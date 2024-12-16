@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build-series:
-    if:  ${{ startsWith(github.head_ref, 'linus') }}
+    if:  ${{ startsWith(github.head_ref, 'linus') || endsWith(github.head_ref, '_manual') }}
     runs-on: self-hosted
     timeout-minutes: 50400 # 35 days
     container:
