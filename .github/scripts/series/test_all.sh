@@ -11,7 +11,7 @@ d=$(dirname "${BASH_SOURCE[0]}")
 $d/unpack_fw.sh
 
 parallel_log=$(mktemp -p ${ci_root})
-parallel -j $(($(nproc)-1)) --colsep ' ' --joblog ${parallel_log} \
+parallel -j $(($(nproc)/4)) --colsep ' ' --joblog ${parallel_log} \
          ${d}/kernel_tester.sh {1} {2} {3} {4} {5} :::: <($d/generate_test_runs.sh) || true
 cat ${parallel_log}
 rm ${parallel_log}
