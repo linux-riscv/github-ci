@@ -26,7 +26,7 @@ from tap import parser
 SQUAD_TOKEN = os.getenv('SQUAD_TOKEN')
 SQUAD_URL = "https://mazarinen.tail1c623.ts.net/api/submit"
 SQUAD_GROUP = "riscv-linux"
-SQUAD_PROJECT = "kselftest" # TODO linux-all when it works
+SQUAD_PROJECT = "linux-all"
 SQUAD_CI_ENV = "qemu"
 
 def parse_bpf_kselftest(kselftest_file, results):
@@ -198,7 +198,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description = 'Output Squad json from kselftest runs')
 
     parser.add_argument("--fake-curl", action="store_true", help = 'Dry run showing curl equivalent')
-    parser.add_argument("--git-ref", default="please_set_me", help = 'Git branch ref')
+    parser.add_argument("--branch", default="please_set_me", help = 'Git branch ref')
     parser.add_argument("--job-url", default="http://example.com/notset", help = 'Job URL')
     parser.add_argument("--selftest-bpf-log", help = 'BPF kselftest log file')
     parser.add_argument("--selftest-log", action="append", help = 'Kselftest log file')
@@ -206,10 +206,10 @@ def parse_args():
 
     return parser.parse_args()
 
-def submit_fake_curl(testsuite, tests_dict, log, job_url, git_ref, build_name, o_path):
+def submit_fake_curl(testsuite, tests_dict, log, job_url, branch, build_name, o_path):
     metadata_json = o_path / (testsuite.replace("/", "_") + "--metadata.json")
     jstr = json.dumps({"job_url" : job_url,
-                       "git_ref" : git_ref
+                       "branch" : branch
                        }, indent=4)
     metadata_json.write_text(jstr)
     print(f"metadata: {jstr}")
@@ -226,12 +226,12 @@ def submit_fake_curl(testsuite, tests_dict, log, job_url, git_ref, build_name, o
         print(f'  --form log=@{log} \\')
     print(f'  {SQUAD_URL}/{SQUAD_GROUP}/{SQUAD_PROJECT}/{build_name}/{SQUAD_CI_ENV}')
 
-def submit_squad(testsuite, tests_dict, log, job_url, git_ref, build_name, o_path):
+def submit_squad(testsuite, tests_dict, log, job_url, branch, build_name, o_path):
     full_url = f"{SQUAD_URL}/{SQUAD_GROUP}/{SQUAD_PROJECT}/{build_name}/{SQUAD_CI_ENV}"
 
     metadata_json = o_path / (testsuite.replace("/", "_") + "--metadata.json")
     jstr = json.dumps({"job_url" : job_url,
-                       "git_ref" : git_ref
+                       "branch" : branch
                        }, indent=4)
     metadata_json.write_text(jstr)
     # print(f"metadata: {jstr}")
@@ -289,8 +289,8 @@ if __name__ == "__main__":
                 for test in results[testsuite]["tests"]:
                     log = results[testsuite]["tests-log"].get(test, None)
                     submit(testsuite, {test : results[testsuite]["tests"][test] },\
-                           log, args.job_url, args.git_ref, results["build_name"], o_path)
+                           log, args.job_url, args.branch, results["build_name"], o_path)
             else:
                 log = results[testsuite].get("log", None)
                 submit(testsuite, results[testsuite]["tests"], log, args.job_url,\
-                       args.git_ref, results["build_name"], o_path)
+                       args.branch, results["build_name"], o_path)
