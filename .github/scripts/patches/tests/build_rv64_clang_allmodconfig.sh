@@ -22,7 +22,7 @@ build() {
         -K CONFIG_DRM_WERROR=n \
         W=1 CROSS_COMPILE=riscv64-linux- \
         config default \
-        >$1 2>/dev/null
+        >$1 2>&1
 }
 
 echo "Redirect to $tmpfile_o and $tmpfile_n"
@@ -33,6 +33,7 @@ git log -1 --pretty='%h ("%s")' HEAD~
 echo "Building the whole tree with the patch"
 time build $tmpfile_e || rc=1
 if [ $rc -eq 1 ]; then
+        echo "error:"
         grep "\(error\):" $tmpfile_e
         rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b $tmpfile_e
         exit $rc
@@ -47,6 +48,7 @@ git checkout -q $HEAD
 echo "Building the tree with the patch"
 time build $tmpfile_n || rc=1
 if [ $rc -eq 1 ]; then
+        echo "error/warning:"
         grep "\(warning\|error\):" $tmpfile_n
         rm -rf $tmpdir_o $tmpfile_o $tmpfile_n $tmpdir_b
         exit $rc
@@ -69,8 +71,10 @@ if [ $current -gt $incumbent ]; then
         tmpfile_fo=$(mktemp -p /build)
         tmpfile_fn=$(mktemp -p /build)
 
+        echo "error/warning file pre:"
         grep "\(warning\|error\):" $tmpfile_o | sed -n 's@\(^\.\./[/a-zA-Z0-9_.-]*.[ch]\):.*@\1@p' | sort | uniq -c \
           > $tmpfile_fo
+        echo "error/warning file post:"
         grep "\(warning\|error\):" $tmpfile_n | sed -n 's@\(^\.\./[/a-zA-Z0-9_.-]*.[ch]\):.*@\1@p' | sort | uniq -c \
           > $tmpfile_fn
 
