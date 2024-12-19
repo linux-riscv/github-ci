@@ -54,5 +54,10 @@ apply_patches
 trap unapply_patches EXIT
 
 make_wrap -j $(($(nproc)-1)) headers
-make_wrap SKIP_TARGETS="" KSFT_INSTALL_PATH=$output/kselftest \
-	  -j $(($(nproc)-1)) -C tools/testing/selftests install
+
+make_wrap SKIP_TARGETS="bpf" -j $(($(nproc)-1)) -C tools/testing/selftests install
+make_wrap TARGETS="bpf" SKIP_TARGETS="" -j $(($(nproc)-1)) -C tools/testing/selftests
+make_wrap TARGETS="bpf" SKIP_TARGETS="" COLLECTION="bpf" -j $(($(nproc)-1)) \
+	  -C tools/testing/selftests/bpf emit_tests | grep -e '^bpf:' \
+	  >> $output/kselftest/kselftest_install/kselftest-list.txt
+cp -R $output/kselftest/bpf $output/kselftest/kselftest_install

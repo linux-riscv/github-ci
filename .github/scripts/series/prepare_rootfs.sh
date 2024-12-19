@@ -30,7 +30,7 @@ rootfs="$tmp/$(basename $rootfs .zst)"
 modpath=$(find $kernelpath -wholename '*/lib/modules')
 vmlinuz=$(find $kernelpath -name '*vmlinuz*')
 
-kselftestpath=${kernelpath}_build/kselftest
+kselftestpath=${kernelpath}_build/kselftest/kselftest_install
 
 imsz=0
 if [[ $tst =~ kselftest ]]; then
@@ -83,8 +83,8 @@ if [[ $tst =~ kselftest ]]; then
 
 set -x
 echo "<5>Hello kselftest" > /dev/kmsg
-cd /kselftest
-export PATH=${PATH}:/kselftest/bpf/tools/sbin
+cd /kselftest_install
+export PATH=${PATH}:/kselftest_install/bpf/tools/sbin
 
 EOF
     case ${tst} in
