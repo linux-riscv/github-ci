@@ -14,7 +14,10 @@ date -Iseconds | tee -a ${f}
 echo "Build an ubuntu kernel" | tee -a ${f}
 echo "Top 16 commits" | tee -a ${f}
 git log -16 --abbrev=12 --pretty="commit %h (\"%s\")" | tee -a ${f}
-build_name=`git describe --tags`
+
+kernel_base_sha=$(git log -1 --pretty=%H $(git log -1 --reverse --pretty=%H .github)^)
+echo "build_name $(git describe --tags ${kernel_base_sha})" | tee -a ${f}
+build_name=$(git describe --tags ${kernel_base_sha})
 
 # Build the kernel that will run LTP
 export CI_TRIPLE="riscv64-linux-gnu"
