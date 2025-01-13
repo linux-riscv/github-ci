@@ -21,7 +21,7 @@ log="build_kernel___${n}.log"
 \time --quiet -o $tm -f "took %es" \
       $d/build_kernel.sh "${xlen}" "${config}" "${fragment}" "${toolchain}" &> "${logs}/${log}" || rc=$?
 
-if grep -a ": warning:" "${logs}/${log}" | grep -v "the frame size"; then
+if grep -a ": warning:" "${logs}/${log}" | grep -qv "frame size"; then
     # TODO Can't get rid of LLVM "warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]"
     if [[ ! "${log}" =~ "nommu" ]]; then
         echo "::error::FAIL WARNINGS kernel ${n} \"${log}\" $(cat $tm)"
