@@ -70,10 +70,7 @@ generate_qemu_subtests() {
 		    if [[ $config =~ ^kselftest && $cpu == server64 \
 			      && $fw == uboot_uefi && $hw == dt && $rootfs == ubuntu ]]; then
 			if (( ${ci_test_selftests} )); then
-			    qemu_subtests+=( "$cpu $fw $hw kselftest-bpf" )
-			    qemu_subtests+=( "$cpu $fw $hw kselftest-net" )
-			    qemu_subtests+=( "$cpu $fw $hw kselftest-ftrace" )
-			    qemu_subtests+=( "$cpu $fw $hw kselftest" )
+			    qemu_subtests+=( "$cpu $fw $hw $config" )
 			fi
 		    fi
 		done

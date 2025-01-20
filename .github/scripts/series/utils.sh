@@ -34,6 +34,10 @@ gen_kernel_name() {
     local fragment=$3
     local toolchain=$4
 
+    if [[ "$config" =~ ^kselftest ]]; then
+        config="kselftest"
+    fi
+
     echo "${xlen}__${config}__$(basename $fragment)__${toolchain}"
 }
 

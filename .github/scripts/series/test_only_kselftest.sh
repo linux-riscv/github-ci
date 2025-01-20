@@ -11,5 +11,14 @@ d=$(dirname "${BASH_SOURCE[0]}")
 
 $d/unpack_fw.sh
 rc=0
-${d}/kernel_tester.sh rv64 kselftest plain gcc ubuntu || rc=1
-exit $rc
+
+kselftest_subtests=("kselftest-bpf" "kselftest-net" "kselftest-ftrace" "kselftest")
+
+parallel_log=$(mktemp -p ${ci_root})
+
+for subtest in "${kselftest_subtests[@]}"; do
+    echo "${d}/kernel_tester.sh rv64 ${subtest} plain gcc ubuntu"
+done | parallel -j$(($(nproc)/2)) --colsep ' ' --joblog ${parallel_log}
+
+cat ${parallel_log}
+rm ${parallel_log}
