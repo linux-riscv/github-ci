@@ -53,6 +53,16 @@ generate_qemu_subtests() {
 		    fi
 		fi
 
+		# For now, we're only doing selftest on DT.
+		if [[ $config =~ ^kselftest ]]; then
+			if [[ $cpu == server64 && $fw == uboot_uefi && $rootfs == ubuntu ]]; then
+				if (( ${ci_test_selftests} )); then
+					qemu_subtests+=( "$cpu $fw dt $config" )
+				fi
+			fi
+			continue
+		fi
+
 		for hw in dt acpi; do
 		    if [[ $hw == acpi ]]; then
 			if [[ $fw == no_uefi ]]; then
@@ -66,13 +76,6 @@ generate_qemu_subtests() {
 
 		    qemu_subtests+=( "$cpu $fw $hw boot" )
 
-		    # For now, we're only doing selftest on DT.
-		    if [[ $config =~ ^kselftest && $cpu == server64 \
-			      && $fw == uboot_uefi && $hw == dt && $rootfs == ubuntu ]]; then
-			if (( ${ci_test_selftests} )); then
-			    qemu_subtests+=( "$cpu $fw $hw $config" )
-			fi
-		    fi
 		done
 	    done
 	done

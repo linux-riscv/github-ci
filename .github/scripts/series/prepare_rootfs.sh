@@ -75,6 +75,14 @@ if [[ $tst =~ kselftest ]]; then
     guestfish --remote -- \
               copy-in $kselftestpath /
 
+    subtest=$(echo ${tst} | cut -f2- -d'-')
+
+    if [[ "$subtest" =~ bpf ]]; then
+        timeout=9000
+    else
+        timeout=3600
+    fi
+
     touch $tmp/dotest
     chmod +x $tmp/dotest
     cat >$tmp/dotest <<EOF
@@ -85,35 +93,9 @@ echo "<5>Hello kselftest" > /dev/kmsg
 cd /kselftest_install
 export PATH=${PATH}:/kselftest_install/bpf/tools/sbin
 
+echo "TEST ${subtest}"
+./run_kselftest.sh -o ${timeout} -c ${subtest}
 EOF
-    case ${tst} in
-        "kselftest-ftrace")
-            cat >>$tmp/dotest <<EOF
-echo "TEST ftrace"
-./run_kselftest.sh -o 3600 -c ftrace
-EOF
-            ;;
-        "kselftest-net")
-            cat >>$tmp/dotest <<EOF
-echo "TEST net"
-./run_kselftest.sh -o 3600 -c net
-EOF
-            ;;
-        "kselftest-bpf")
-            cat >>$tmp/dotest <<EOF
-echo "TEST bpf"
-./run_kselftest.sh -o 9000 -c bpf
-EOF
-            ;;
-        *)
-            cat >>$tmp/dotest <<EOF
-for i in \$(./run_kselftest.sh -l | egrep '^[/a-z0-9]+:' | awk -F: '{print \$1}' |uniq |egrep -v 'bpf|net|ftrace|lkdtm|breakpoints'); do
-    echo "TEST  \$i"
-    ./run_kselftest.sh -o 3600 -c \$i
-done
-EOF
-            ;;
-    esac
 
     echo "dotest:"
     cat $tmp/dotest
