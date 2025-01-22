@@ -45,7 +45,6 @@ fi
 imsz=$(( ${imsz} + 2 ))
 
 # aarch64 export LIBGUESTFS_BACKEND_SETTINGS=force_tcg
-export LIBGUESTFS_BACKEND_SETTINGS=force_kvm
 eval "$(guestfish --listen)"
 
 rm -rf $imagename

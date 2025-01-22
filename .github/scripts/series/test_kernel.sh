@@ -134,7 +134,6 @@ check_shutdown () {
     local image=$1
     local rc=0
     
-    export LIBGUESTFS_BACKEND_SETTINGS=force_kvm
     shutdown="$(guestfish --ro -a "$image" -i cat /shutdown-status 2>/dev/null)"
     if [[ $shutdown == "clean" ]]; then
 	f=$(mktemp -p ${tmp})
