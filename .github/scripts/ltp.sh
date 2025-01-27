@@ -25,10 +25,16 @@ source /build/.env/bin/activate
 ltp_tests=( "ltp-commands"  "ltp-syscalls" "ltp-mm" "ltp-hugetlb" "ltp-crypto" "ltp-cve" "ltp-containers" "ltp-fs" "ltp-sched" )
 
 mkdir -p /build/squad_json/
+parallel_log=$(mktemp -p ${ci_root})
 
 for ltp_test in ${ltp_tests[@]}; do
-    /build/tuxrun/run --runtime null --device qemu-riscv64 --kernel $KERNEL_PATH --tests $ltp_test --results /build/squad_json/$ltp_test.json --log-file-text /build/squad_json/$ltp_test.log --timeouts $ltp_test=480 || true
+    echo "/build/tuxrun/run --runtime null --device qemu-riscv64 --kernel $KERNEL_PATH --tests $ltp_test --results /build/squad_json/$ltp_test.json --log-file-text /build/squad_json/$ltp_test.log --timeouts $ltp_test=480 || true"
+done | parallel -j $(($(nproc)/4)) --colsep ' ' --joblog ${parallel_log}
 
+cat ${parallel_log}
+rm ${parallel_log}
+
+for ltp_test in ${ltp_tests[@]}; do
     # Convert JSON to squad datamodel
     python3 /build/my-linux/.github/scripts/series/tuxrun_to_squad_json.py --result-path /build/squad_json/$ltp_test.json --testsuite $ltp_test
     python3 /build/my-linux/.github/scripts/series/generate_metadata.py --logs-path /build/squad_json/ --job-url ${GITHUB_JOB_URL} --branch ${GITHUB_BRANCH_NAME}

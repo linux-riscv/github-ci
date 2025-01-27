@@ -201,7 +201,7 @@ def parse_args():
     parser.add_argument("--branch", default="please_set_me", help = 'Git branch ref')
     parser.add_argument("--job-url", default="http://example.com/notset", help = 'Job URL')
     parser.add_argument("--selftest-bpf-log", help = 'BPF kselftest log file')
-    parser.add_argument("--selftest-log", action="append", help = 'Kselftest log file')
+    parser.add_argument("--selftest-log-dir", default=None, help = 'Kselftest log files directory')
     parser.add_argument("--toplevel-log", required=True, help = 'Toplevel "kselftest.log" file')
 
     return parser.parse_args()
@@ -265,8 +265,8 @@ if __name__ == "__main__":
     with open(t, 'r') as top:
         results = parse_toplevel(top, results)
 
-    if args.selftest_log:
-        for f in args.selftest_log:
+    if args.selftest_log_dir:
+        for f in Path(args.selftest_log_dir).glob("test_kernel__*.log"):
             a = os.path.expanduser(f)
             with open(a, 'r') as all:
                 results = parse_kselftest(all, results)

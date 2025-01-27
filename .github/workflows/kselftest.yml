@@ -54,8 +54,6 @@ jobs:
           /build/my-linux/.github/scripts/series/post_to_squad.py \
             --toplevel-log=/build/logs/kselftest.log  \
             --selftest-bpf-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest-bpf.log \
-            --selftest-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest.log \
-            --selftest-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest-ftrace.log \
-            --selftest-log=/build/logs/test_kernel___rv64__kselftest__plain__gcc___ubuntu___server64__uboot_uefi__dt__kselftest-net.log \
+            --selftest-log-dir=/build/logs/ \
             --job-url="${GITHUB_JOB_URL}" \
             --branch="${{ github.head_ref || github.ref_name }}"
