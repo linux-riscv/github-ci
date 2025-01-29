@@ -91,8 +91,7 @@ else
     git checkout -B $WORKFLOW_BRANCH origin/$WORKFLOW_BRANCH
 fi
 
-if ! git diff --no-index .github -- $tmpdir/ci/.github &> /dev/null; then
-    echo ">>> Workflow has changed, pulling in"
+update() {
     echo "$ git checkout -B $WORKFLOW_BRANCH origin/$ORIGIN_BRANCH"
     git checkout -B $WORKFLOW_BRANCH origin/$ORIGIN_BRANCH
     echo "$ cp -R $tmpdir/ci/.github ."
@@ -105,6 +104,19 @@ if ! git diff --no-index .github -- $tmpdir/ci/.github &> /dev/null; then
     git branch
     echo "$ git push -f origin $WORKFLOW_BRANCH"
     git push -f origin $WORKFLOW_BRANCH
+}
+
+if ! git diff --no-index .github -- $tmpdir/ci/.github &> /dev/null; then
+    echo ">>> Workflow has changed, pulling in"
+    update
+fi
+
+master_commit=$(git log -1 --format=%H origin/$ORIGIN_BRANCH)
+workflow_commit=$(git log -1 --format=%H origin/${WORKFLOW_BRANCH}^)
+echo ">>> Assert master/workflow commits are same: $master_commit $workflow_commit"
+if [[ "$master_commit" != "$workflow_commit" ]]; then
+    echo ">>> Updating workflow"
+    update
 fi
 
 echo ">>> Done Exit"
