@@ -5,7 +5,7 @@
     "user": "linux.riscv.bot@gmail.com",
     "starttls": true,
     "default-to": "linux.riscv.bot@gmail.com",
-    "only-maintainers": true,
+    "only-maintainers": false,
     "maintainers": [
 	"linux.riscv.bot@gmail.com"
     ]
