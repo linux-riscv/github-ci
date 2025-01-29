@@ -261,12 +261,6 @@ def series_check_patches(ci_data, series):
         log_info(f"Applied series {series['id']} to {branch}")
         applied_branch = branch
         # git am success
-        if ci_data.config['dry_run'] or already_checked:
-            log_info("Skip submitting the result to PW: Success")
-        else:
-            for patch in series['patches']:
-                # XXX Link to GH PR via url?
-                ci_data.pw.post_check(patch, "pre-ci_am", 1, "Success")
         break
 
     if not applied_branch:
@@ -300,7 +294,13 @@ def series_check_patches(ci_data, series):
     pr_body = PR_BODY.format(sid=series['id'], branch=applied_branch, name=series['name'],
                              url=series['web_url'], version=series['version'])
     log_info(f"Creating PR: {title}")
-    if ci_data.gh.create_pr(title, pr_body, applied_branch, f"pw{series['id']}"):
+    if (pr := ci_data.gh.create_pr(title, pr_body, applied_branch, f"pw{series['id']}")):
+        if ci_data.config['dry_run'] or already_checked:
+            log_info("Skip submitting the result to PW: Success")
+        else:
+            for patch in series['patches']:
+                ci_data.pw.post_check(patch, "pre-ci_am", 1, "Success", url=pr.html_url)
+
         return True
 
     return False
