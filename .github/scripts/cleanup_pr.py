@@ -190,7 +190,7 @@ def manage_pr(gh):
             continue
 
         # Calcuate the number of days since PR was created
-        delta = datetime.now() - pr.created_at
+        delta = datetime.now().astimezone(pr.created_at.tzinfo) - pr.created_at
         days_created = delta.days
 
         log_debug(f"PR opended {days_created} days ago")
