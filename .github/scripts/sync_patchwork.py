@@ -323,6 +323,10 @@ def run_series(ci_data, new_series):
             series['name'] = patch_1['name']
             log_debug(f"updated series name: {series['name']}")
 
+        if not series['received_all']:
+            log_info(f"Series is NOT fully received")
+            continue
+
         # Filter the series by include/exclude string
         if not filter_repo_space(ci_data, space_details, series,
                                  ci_data.src_dir):
