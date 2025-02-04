@@ -54,7 +54,7 @@ git remote set-url origin "https://$GITHUB_ACTOR:$ACTION_TOKEN@github.com/$GITHU
 echo "$ git remote add upstream $UPSTREAM_REPO"
 git remote add upstream "$UPSTREAM_REPO"
 echo "$ git fetch upstream $UPSTREAM_BRANCH"
-git fetch upstream $UPSTREAM_BRANCH
+git fetch upstream --tags $UPSTREAM_BRANCH
 
 echo ">>> Check Origin and Upstream"
 if git rev-parse --verify --quiet origin/$ORIGIN_BRANCH &>/dev/null; then
