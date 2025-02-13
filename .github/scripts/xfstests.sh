@@ -22,12 +22,22 @@ build_name=$(cat "$1/kernel_version")
 # dependencies
 source /build/.env/bin/activate
 
+xfs_tests=( "xfstests-ext4" "xfstests-btrfs" "xfstests-f2fs" "xfstests-xfs" )
+
 mkdir -p /build/squad_json/
+parallel_log=$(mktemp -p ${ci_root})
 
-/build/tuxrun/run --runtime null --device qemu-riscv64 --kernel $KERNEL_PATH --tests xfstests-ext4 --results /build/squad_json/xfstests-ext4.json --log-file-text /build/squad_json/xfstests-ext4.log --timeouts xfstests-ext4=480  --overlay /build/xfstests.tar.xz --rootfs $ROOTFS_PATH --boot-args "rw" || true
+for xfs_test in ${xfs_tests[@]}; do
+    echo "/build/tuxrun/run --runtime null --device qemu-riscv64 --kernel $KERNEL_PATH --tests ${xfs_test} --results /build/squad_json/${xfs_test}.json --log-file-text /build/squad_json/${xfs_test}.log --timeouts ${xfs_test}=480  --overlay /build/xfstests.tar.xz --rootfs $ROOTFS_PATH --boot-args \"rw\" || true"
+done | parallel -j $(($(nproc)/4)) --colsep ' ' --joblog ${parallel_log}
 
-# Convert JSON to squad datamodel
-python3 /build/my-linux/.github/scripts/series/tuxrun_to_squad_json.py --result-path /build/squad_json/xfstests-ext4.json --testsuite xfstests-ext4
-python3 /build/my-linux/.github/scripts/series/generate_metadata.py --logs-path /build/squad_json/ --job-url ${GITHUB_JOB_URL} --branch ${GITHUB_BRANCH_NAME}
+cat ${parallel_log}
+rm ${parallel_log}
 
-curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@/build/squad_json/xfstests-ext4.squad.json --form log=@/build/squad_json/xfstests-ext4.log --form metadata=@/build/squad_json/metadata.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/${build_name}/qemu
+for xfs_test in ${xfs_tests[@]}; do
+    # Convert JSON to squad datamodel
+    python3 /build/my-linux/.github/scripts/series/tuxrun_to_squad_json.py --result-path /build/squad_json/${xfs_test}.json --testsuite ${xfs_test}
+    python3 /build/my-linux/.github/scripts/series/generate_metadata.py --logs-path /build/squad_json/ --job-url ${GITHUB_JOB_URL} --branch ${GITHUB_BRANCH_NAME}
+
+    curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@/build/squad_json/${xfs_test}.squad.json --form log=@/build/squad_json/${xfs_test}.log --form metadata=@/build/squad_json/metadata.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/${build_name}/qemu
+done
