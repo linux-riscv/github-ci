@@ -132,15 +132,21 @@ qemu_rv32 () {
 
 check_shutdown () {
     local image=$1
+    local kernel_name=$2
     local rc=0
-    
+    local report_warn_bug="$(get_logs_dir)/series_report_warn_bug"
+
     shutdown="$(guestfish --ro -a "$image" -i cat /shutdown-status 2>/dev/null)"
     if [[ $shutdown == "clean" ]]; then
 	f=$(mktemp -p ${tmp})
         guestfish --rw -a "$image" -i download /dmesg $f
         fail_str=( "\-+\\[ cut here \\]-+\\s+(.*\\s+-+\\[ end trace (\\w*) \\]-+)" "(Unhandled fault.*)\\r\\n" "Kernel panic - (.*) end Kernel panic" "Stack:\\s+(.*\\s+-+\\[ end trace (\\w*) \\]-+)" "^[^\\n]+WARNING:.*?$" "^[^\\n]+Oops(?: -|:).*?$" "^[^\\n]+BUG:.*?$" )
         for fail in "${fail_str[@]}"; do
-            if grep -E "$fail" $f; then
+            ret=`grep -E "$fail" $f`
+            if [[ "$?" == "0" ]]; then
+                echo "***" >> $report_warn_bug
+                echo "$kernel_name" >> $report_warn_bug
+                echo "$ret" >> $report_warn_bug
                 rc=1
             fi
         done
@@ -202,5 +208,5 @@ export TIMEFORMAT="took qemu %0R"
 time qemu_${xlen} ${qemu_to} ${qemu_log} ${qemu_bios} ${qemu_kernel} ${qemu_cpu} ${qemu_acpi} ${qemu_aia} ${qemu_image}
 
 export TIMEFORMAT="took check_shutdown %0R"
-time check_shutdown $qemu_image || rc=$?
+time check_shutdown $qemu_image $(gen_kernel_name $xlen $config $fragment $toolchain) || rc=$?
 exit $rc

@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 
 def parse_args():
     parser = argparse.ArgumentParser(description = 'Output Squad metadata')
@@ -19,6 +20,13 @@ def generate_squad_json(logs_path, job_url, branch):
 
     dict_results["job_url"] = job_url
     dict_results["branch"] = branch
+
+    report_log_path = os.path.join(logs_path, "series_report_warn_bug")
+    if os.path.isfile(report_log_path):
+        with open(report_log_path, 'r') as f:
+            dict_results["report"] = f.read()
+    else:
+        dict_results["report"] = "Empty"
 
     with open(logs_path + "/" + "metadata.json", "w") as f:
         json.dump(dict_results, f)
