@@ -15,6 +15,9 @@ mv $KERNEL_PATH $KERNEL_PATH.gz
 gunzip  $KERNEL_PATH.gz
 
 ROOTFS_PATH=$(find /rootfs/ -name 'rootfs_rv64_ubuntu*.ext4')
+# Resize the fs
+truncate -s +4G $ROOTFS_PATH
+resize2fs $ROOTFS_PATH
 
 build_name=$(cat "$1/kernel_version")
 
