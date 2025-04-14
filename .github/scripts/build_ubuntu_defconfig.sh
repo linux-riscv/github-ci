@@ -20,7 +20,9 @@ echo "build_name $(git describe --tags ${kernel_base_sha})" | tee -a ${f}
 build_name=$(git describe --tags ${kernel_base_sha})
 
 # Build the kernel that will run LTP
-export CI_TRIPLE="riscv64-linux-gnu"
+export CI_TRIPLE="riscv64-unknown-linux-gnu"
+# Use a CFI-enabled toolchain
+export PATH=/build/INSTALL_Sept24/bin:$PATH
 cp $d/series/kconfigs/ubuntu_defconfig arch/riscv/configs/
 $d/series/kernel_builder.sh rv64 testsuites plain gcc | tee -a ${f}
 
