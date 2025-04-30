@@ -10,7 +10,7 @@ d=$(dirname "${BASH_SOURCE[0]}")
 logs=$(get_logs_dir)
 f=${logs}/xfstests.log
 
-KERNEL_PATH=$(find "$1" -name '*vmlinuz*')
+KERNEL_PATH=$(find "$1" -name '*vmlinu[zx]*')
 mv $KERNEL_PATH $KERNEL_PATH.gz
 gunzip  $KERNEL_PATH.gz
 

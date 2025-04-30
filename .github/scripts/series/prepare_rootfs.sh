@@ -28,7 +28,7 @@ unzstd --keep --stdout $rootfs > $tmp/$(basename $rootfs .zst)
 
 rootfs="$tmp/$(basename $rootfs .zst)"
 modpath=$(find $kernelpath -wholename '*/lib/modules')
-vmlinuz=$(find $kernelpath -name '*vmlinuz*')
+vmlinuz=$(find $kernelpath -name '*vmlinu[zx]*')
 
 kselftestpath=${kernelpath}_build/kselftest/kselftest_install
 

@@ -155,7 +155,7 @@ tmp=$(mktemp -d -p "${ci_root}")
 trap 'rm -rf "$tmp"' EXIT
 
 kernelpath=${ci_root}/$(gen_kernel_name $xlen $config $fragment $toolchain)
-vmlinuz=$(find $kernelpath -name '*vmlinuz*')
+vmlinuz=$(find $kernelpath -name '*vmlinu[zx]*')
 rootfs_tar=$(echo ${ci_rootfs_root}/rootfs_${xlen}_${rootfs}_*.tar.zst)
 qemu_image=$tmp/rootfs.img
 
