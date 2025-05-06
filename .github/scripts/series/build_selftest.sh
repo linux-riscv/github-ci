@@ -61,3 +61,9 @@ make_wrap TARGETS="bpf" SKIP_TARGETS="" COLLECTION="bpf" -j $(($(nproc)-1)) \
 	  -C tools/testing/selftests/bpf emit_tests | grep -e '^bpf:' \
 	  >> $output/kselftest/kselftest_install/kselftest-list.txt
 cp -R $output/kselftest/bpf $output/kselftest/kselftest_install
+
+logs=$(get_logs_dir)
+
+cat $output/kselftest/kselftest_install/kselftest-list.txt \
+    | awk -F : '{print "kselftest-"$1}' \
+    | uniq | grep -v 'amd\|intel\|livepatch\|lkdtm' > $logs/kselftest-collections.txt

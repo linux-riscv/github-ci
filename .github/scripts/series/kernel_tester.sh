@@ -28,6 +28,7 @@ for i in $(seq $tot); do
     tst=${qemu_subtests[$(($i - 1))]}
 
     log="test_kernel___${n}___${rootfs}___${tstn}.log"
+    log=${log//\//-}
     \time --quiet -o $tm -f "took %es" \
 	  $d/test_kernel.sh "${xlen}" "${config}" "${fragment}" "${toolchain}" "${rootfs}" \
 	  $tst &> "${logs}/${log}" || rc=$?
