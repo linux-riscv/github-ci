@@ -26,8 +26,8 @@ ${d}/series/test_all.sh | tee -a ${f}
 # Some logs contain invalid bytes (not utf-8) and then makes the following
 # script fail so convert them all.
 for f in `ls ${logs}`; do
-    iconv -c -t utf-8 ${logs}/${f} > ${logs}/${f}_tmp
-    mv ${logs}/${f}_tmp ${logs}/${f}
+    iconv -c -t utf-8 ${logs}/${f} > ${logs}/${f}_tmp || true
+    mv ${logs}/${f}_tmp ${logs}/${f} || true
 done
 
 python3 ${d}/series/github_ci_squad_results.py --logs-path ${logs}
