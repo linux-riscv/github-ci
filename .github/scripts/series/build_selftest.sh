@@ -66,4 +66,4 @@ logs=$(get_logs_dir)
 
 cat $output/kselftest/kselftest_install/kselftest-list.txt \
     | awk -F : '{print "kselftest-"$1}' \
-    | uniq | grep -v 'amd\|intel\|livepatch\|lkdtm\|breakpoints' > $logs/kselftest-collections.txt
+    | uniq | grep -v 'amd\|intel\|livepatch\|lkdtm\|breakpoints\|tdx\|x86' > $logs/kselftest-collections.txt
