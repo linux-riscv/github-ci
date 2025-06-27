@@ -37,4 +37,4 @@ python3 ${d}/series/generate_metadata.py --logs-path ${logs} \
 curl --header "Authorization: token ${SQUAD_TOKEN}" \
      --form tests=@${logs}/squad.json \
      --form metadata=@${logs}/metadata.json \
-     https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/${build_name}/qemu
+     https://squad.di.riseproject.dev/api/submit/riscv-linux/linux-all/${build_name}/qemu

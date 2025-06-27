@@ -39,5 +39,5 @@ for ltp_test in ${ltp_tests[@]}; do
     python3 /build/my-linux/.github/scripts/series/tuxrun_to_squad_json.py --result-path /build/squad_json/$ltp_test.json --testsuite $ltp_test
     python3 /build/my-linux/.github/scripts/series/generate_metadata.py --logs-path /build/squad_json/ --job-url ${GITHUB_JOB_URL} --branch ${GITHUB_BRANCH_NAME}
 
-    curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@/build/squad_json/$ltp_test.squad.json --form log=@/build/squad_json/$ltp_test.log --form metadata=@/build/squad_json/metadata.json https://mazarinen.tail1c623.ts.net/api/submit/riscv-linux/linux-all/${build_name}/qemu
+    curl --header "Authorization: token $SQUAD_TOKEN" --form tests=@/build/squad_json/$ltp_test.squad.json --form log=@/build/squad_json/$ltp_test.log --form metadata=@/build/squad_json/metadata.json https://squad.di.riseproject.dev/api/submit/riscv-linux/linux-all/${build_name}/qemu
 done

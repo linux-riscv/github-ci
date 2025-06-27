@@ -24,7 +24,7 @@ from pathlib import Path
 from tap import parser
 
 SQUAD_TOKEN = os.getenv('SQUAD_TOKEN')
-SQUAD_URL = "https://mazarinen.tail1c623.ts.net/api/submit"
+SQUAD_URL = "https://squad.di.riseproject.dev/api/submit"
 SQUAD_GROUP = "riscv-linux"
 SQUAD_PROJECT = "linux-all"
 SQUAD_CI_ENV = "qemu"
